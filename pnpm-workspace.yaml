@@ -1,2 +1,4 @@
 allowBuilds:
-  esbuild: true
+    '@prisma/engines': true
+    esbuild: true
+    prisma: true
