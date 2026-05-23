@@ -8,10 +8,10 @@ app.use(express.json());
 
 // Rota de teste
 app.get('/ping', (req: Request, res: Response) => {
-  res.json({ message: 'pong! O servidor TypeScript está rodando!' });
+    res.json({ message: 'pong! O servidor TypeScript está rodando!' });
 });
 
 // Inicia o servidor
 app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
+    console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
 });
