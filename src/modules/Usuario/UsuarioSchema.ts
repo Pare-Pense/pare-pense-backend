@@ -6,9 +6,24 @@ export const criarUsuarioSchema = z.object({
         error: () => ({ message: 'Data de nascimento inválida' }),
     }),
     email: z.email('Formato de e-mail inválido'),
-    senha: z.string(),
+    senha: z.string().min(8, 'A senha deve ter no mínimo 8 caracteres'),
     rendaMensal: z.number().positive('A renda não pode ser negativa'), // talvez fazer uma alteração pra renda 0
     limiteMensal: z.number().positive('O limite não pode ser negativo'),
 });
+
+export const idUsuarioSchema = z.object({
+    id: z.uuid('O ID está em um formato inválido'),
+});
+
+export const atualizaUsuarioSchema = criarUsuarioSchema
+    .omit({ senha: true })
+    .partial();
+
+export const atualizaSenhaSchema = z.object({
+    senhaAntiga: z.string().min(1, 'A senha atual é obrigatória'),
+    senhaNova: z.string().min(8, 'A senha deve ter no mínimo 8 caracteres'),
+});
+
+export type AtualizaSenhaSchema = z.infer<typeof atualizaSenhaSchema>;
 
 export type UsuarioSchema = z.infer<typeof criarUsuarioSchema>;
