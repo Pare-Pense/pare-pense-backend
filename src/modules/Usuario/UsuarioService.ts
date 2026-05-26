@@ -3,8 +3,10 @@ import type { AtualizaSenhaSchema, UsuarioSchema } from './UsuarioSchema.js';
 import bcrypt from 'bcrypt';
 
 export class UsuarioService {
+    constructor(private db = prisma) {}
+
     async criarUsuario(usuario: UsuarioSchema) {
-        const emailExiste = await prisma.usuario.findUnique({
+        const emailExiste = await this.db.usuario.findUnique({
             where: { email: usuario.email },
         });
 
@@ -14,7 +16,7 @@ export class UsuarioService {
 
         const senhaHashed = await bcrypt.hash(usuario.senha, 10);
 
-        const novoUsuario = await prisma.usuario.create({
+        const novoUsuario = await this.db.usuario.create({
             data: {
                 nome: usuario.nome,
                 dataNascimento: usuario.dataNascimento,
@@ -27,11 +29,15 @@ export class UsuarioService {
 
         const { senha: _, ...usuarioSemSenha } = novoUsuario;
 
-        return usuarioSemSenha;
+        return {
+            ...usuarioSemSenha,
+            rendaMensal: usuarioSemSenha.rendaMensal.toNumber(),
+            limiteMensal: usuarioSemSenha.limiteMensal.toNumber(),
+        };
     }
 
     async recuperaUsuario(id: string) {
-        const usuario = prisma.usuario.findUnique({
+        const usuario = await this.db.usuario.findUnique({
             where: { id },
         });
 
@@ -39,14 +45,20 @@ export class UsuarioService {
             throw new Error('Usuário não encontrado');
         }
 
-        return usuario;
+        const { senha: _, ...usuarioSemSenha } = usuario;
+
+        return {
+            ...usuarioSemSenha,
+            rendaMensal: usuarioSemSenha.rendaMensal.toNumber(),
+            limiteMensal: usuarioSemSenha.limiteMensal.toNumber(),
+        };
     }
 
     async atualizaUsuario(id: string, data: UsuarioSchema) {
         await this.recuperaUsuario(id);
 
         if (data.email) {
-            const emailExiste = await prisma.usuario.findUnique({
+            const emailExiste = await this.db.usuario.findUnique({
                 where: { email: data.email },
             });
 
@@ -55,18 +67,22 @@ export class UsuarioService {
             }
         }
 
-        const usuarioAtualizado = await prisma.usuario.update({
+        const usuarioAtualizado = await this.db.usuario.update({
             where: { id },
             data,
         });
 
         const { senha: _, ...usuarioSemSenha } = usuarioAtualizado;
 
-        return usuarioSemSenha;
+        return {
+            ...usuarioSemSenha,
+            rendaMensal: usuarioSemSenha.rendaMensal.toNumber(),
+            limiteMensal: usuarioSemSenha.limiteMensal.toNumber(),
+        };
     }
 
     async atualizaSenhaUsuario(id: string, data: AtualizaSenhaSchema) {
-        const usuario = await prisma.usuario.findUnique({
+        const usuario = await this.db.usuario.findUnique({
             where: { id },
         });
 
@@ -85,7 +101,7 @@ export class UsuarioService {
 
         const novaSenhaHashed = await bcrypt.hash(data.senhaNova, 10);
 
-        await prisma.usuario.update({
+        await this.db.usuario.update({
             where: { id },
             data: { senha: novaSenhaHashed },
         });
@@ -96,7 +112,7 @@ export class UsuarioService {
     async deletarUsuario(id: string) {
         await this.recuperaUsuario(id);
 
-        await prisma.usuario.delete({ where: { id } });
+        await this.db.usuario.delete({ where: { id } });
 
         return { message: 'Usuário deletado com sucesso.' };
     }
