@@ -16,4 +16,25 @@ model Usuario {
     rendaMensal Decimal @db.Decimal(10, 2)
     limiteMensal Decimal @db.Decimal(10, 2)
     createdAt DateTime @default(now())
+    despesas Despesa[]
+}
+
+model Despesa {
+    id String @id @default(uuid())
+    nome String
+    categoria Categoria
+    data DateTime @db.Date
+    valor Decimal @db.Decimal(10, 2)
+    horario DateTime @db.Time
+    idUsuario String
+    usuario Usuario @relation(fields: [idUsuario], references: [id])
+}
+
+enum Categoria {
+    ALIMENTACAO
+    LAZER
+    TRANSPORTE
+    COMPRAS
+    CONTAS
+    OUTROS
 }
