@@ -13,7 +13,7 @@ describe('UsuarioService - Testes de Unidade', () => {
     });
 
     describe('Função: Criar usuário', () => {
-        it('cria um usuário com sucesso e não retorna a senha', async () => {
+        it('fluxo de criação de um usuário com sucesso e sem retorno da senha', async () => {
             mockPrisma.usuario.findUnique.mockResolvedValue(null);
 
             mockPrisma.usuario.create.mockResolvedValue({
@@ -69,7 +69,7 @@ describe('UsuarioService - Testes de Unidade', () => {
     });
 
     describe('Função: Recuperar usuário', () => {
-        it('recupera o usuário com sucesso e sem retornar a senha', async () => {
+        it('fluxo de recuperação do usuário com sucesso e sem retorno da senha', async () => {
             mockPrisma.usuario.findUnique.mockResolvedValue({
                 id: '123-uuid',
                 nome: 'Teste',
@@ -98,7 +98,7 @@ describe('UsuarioService - Testes de Unidade', () => {
     });
 
     describe('Função: Atualizar usuário', () => {
-        it('atualiza limite mensal do usuário e sem retornar a senha', async () => {
+        it('fluxo de atualização do usuário (limite mensal) e sem retorno da senha', async () => {
             mockPrisma.usuario.findUnique.mockResolvedValue({
                 id: '123-uuid',
                 nome: 'Teste',
@@ -171,7 +171,7 @@ describe('UsuarioService - Testes de Unidade', () => {
     });
 
     describe('Função: Atualizar senha usuário', () => {
-        it('fluxo de atualizar a senha', async () => {
+        it('fluxo de atualização da senha', async () => {
             mockPrisma.usuario.findUnique.mockResolvedValue({
                 id: '123-uuid',
                 nome: 'Teste',
