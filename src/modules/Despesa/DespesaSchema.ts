@@ -28,3 +28,5 @@ export const criarDespesaSchema = z.object({
     valor: z.number().positive('O valor não pode ser negativo'),
     idUsuario: z.uuid('O ID do usuário está em um formato inválido'),
 });
+
+export type DespesaSchema = z.infer<typeof criarDespesaSchema>;
