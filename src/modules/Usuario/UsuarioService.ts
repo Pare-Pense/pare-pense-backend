@@ -117,3 +117,5 @@ export class UsuarioService {
         return { message: 'Usuário deletado com sucesso.' };
     }
 }
+
+export const usuarioService = new UsuarioService();

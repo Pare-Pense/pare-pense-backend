@@ -1,8 +1,6 @@
 import type { Request, Response } from 'express';
-import { UsuarioService } from './UsuarioService.js';
+import { usuarioService } from './UsuarioService.js';
 import { idUsuarioSchema } from './UsuarioSchema.js';
-
-const usuarioService = new UsuarioService();
 
 export class UsuarioController {
     async criarUsuario(req: Request, res: Response) {
