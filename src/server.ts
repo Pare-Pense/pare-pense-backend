@@ -1,4 +1,5 @@
-import express, { type Request, type Response } from 'express';
+import express from 'express';
+import { routes as usuarioRoutes } from './modules/Usuario/UsuarioRoute.js';
 
 const app = express();
 const PORT = 3000;
@@ -6,10 +7,7 @@ const PORT = 3000;
 // Permite que o servidor entenda requisições em JSON
 app.use(express.json());
 
-// Rota de teste
-app.get('/ping', (req: Request, res: Response) => {
-    res.json({ message: 'pong! O servidor TypeScript está rodando!' });
-});
+app.use('/usuarios', usuarioRoutes);
 
 // Inicia o servidor
 app.listen(PORT, () => {

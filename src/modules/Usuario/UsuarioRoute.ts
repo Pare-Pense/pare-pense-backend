@@ -7,7 +7,7 @@ import {
 } from './UsuarioSchema.js';
 import { UsuarioController } from './UsuarioController.js';
 
-const routes = Router();
+const routes: Router = Router();
 const usuarioController = new UsuarioController();
 
 routes.get('/:id', usuarioController.recuperaUsuario);
@@ -27,3 +27,5 @@ routes.patch(
     usuarioController.atualizaSenhaUsuario,
 );
 routes.delete('/:id', usuarioController.deletaUsuario);
+
+export { routes };
