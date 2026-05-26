@@ -27,7 +27,7 @@ model Despesa {
     valor Decimal @db.Decimal(10, 2)
     horario DateTime @db.Time
     idUsuario String
-    usuario Usuario @relation(fields: [idUsuario], references: [id])
+    usuario Usuario @relation(fields: [idUsuario], references: [id], onDelete: Cascade)
 }
 
 enum Categoria {

@@ -24,10 +24,18 @@ docker compose up -d
 
 ### 2. Estruturação do banco de dados
 
-Considerando que você já preencheu o .env corretamente com a url do banco de dados, execute o código abaixo:
+Considerando que você já preencheu o .env corretamente com a url do banco de dados, execute um dos códigos abaixo:
+
+- Caso esteja realizando uma instalação do zero:
 
 ```
-pnpm exec prisma db push
+pnpm exec prisma migrate deploy
+```
+
+- Caso já tenha baixado o projeto anteriormente e vai atualizar o banco com alterações:
+
+```
+pnpm exec prisma migrate dev
 ```
 
 ### 3. Gerar o Prisma Client
