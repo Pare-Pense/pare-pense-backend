@@ -29,4 +29,9 @@ export const criarDespesaSchema = z.object({
     idUsuario: z.uuid('O ID do usuário está em um formato inválido'),
 });
 
+export const atualizarDespesaSchema = criarDespesaSchema
+    .omit({ idUsuario: true })
+    .partial();
+
 export type DespesaSchema = z.infer<typeof criarDespesaSchema>;
+export type AtualizaDespesaSchema = z.infer<typeof atualizarDespesaSchema>;
