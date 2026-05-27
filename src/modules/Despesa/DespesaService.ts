@@ -4,6 +4,12 @@ import type { DespesaSchema } from './DespesaSchema.js';
 export class DespesaService {
     constructor(private db = prisma) {}
 
+    private formatadorHorario = new Intl.DateTimeFormat('pt-BR', {
+        timeZone: 'America/Sao_Paulo',
+        hour: '2-digit',
+        minute: '2-digit',
+    });
+
     async cadastrarDespesa(data: DespesaSchema) {
         const despesa = await this.db.despesa.create({
             data,
@@ -12,6 +18,7 @@ export class DespesaService {
         return {
             ...despesa,
             valor: despesa.valor.toNumber(),
+            horario: this.formatadorHorario.format(despesa.horario),
         };
     }
 
@@ -23,6 +30,7 @@ export class DespesaService {
         return despesas.map((despesa) => ({
             ...despesa,
             valor: despesa.valor.toNumber(),
+            horario: this.formatadorHorario.format(despesa.horario),
         }));
     }
 
@@ -42,6 +50,7 @@ export class DespesaService {
         return {
             ...despesa,
             valor: despesa.valor.toNumber(),
+            horario: this.formatadorHorario.format(despesa.horario),
         };
     }
 
@@ -60,6 +69,7 @@ export class DespesaService {
         return {
             ...despesa,
             valor: despesa.valor.toNumber(),
+            horario: this.formatadorHorario.format(despesa.horario),
         };
     }
 
