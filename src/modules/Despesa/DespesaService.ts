@@ -9,7 +9,10 @@ export class DespesaService {
             data,
         });
 
-        return despesa;
+        return {
+            ...despesa,
+            valor: despesa.valor.toNumber(),
+        };
     }
 
     async recuperarDespesasAll(idUsuario: string) {
@@ -17,7 +20,10 @@ export class DespesaService {
             where: { idUsuario },
         });
 
-        return despesas;
+        return despesas.map((despesa) => ({
+            ...despesa,
+            valor: despesa.valor.toNumber(),
+        }));
     }
 
     async recuperarDespesa(idUsuario: string, idDespesa: string) {
@@ -33,7 +39,10 @@ export class DespesaService {
             throw new Error('Despesa não pertence a esse usuário');
         }
 
-        return despesa;
+        return {
+            ...despesa,
+            valor: despesa.valor.toNumber(),
+        };
     }
 
     async atualizaDespesa(
@@ -48,7 +57,10 @@ export class DespesaService {
             data,
         });
 
-        return despesa;
+        return {
+            ...despesa,
+            valor: despesa.valor.toNumber(),
+        };
     }
 
     async deletarDespesa(idUsuario: string, idDespesa: string) {
