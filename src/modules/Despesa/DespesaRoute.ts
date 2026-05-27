@@ -7,6 +7,7 @@ const routes: Router = Router();
 const despesaController = new DespesaController();
 
 routes.get('/:idUsuario/:idDespesa', despesaController.recuperarDespesa);
+routes.get('/:idUsuario', despesaController.recuperarDespesasAll);
 routes.post(
     '/cadastrarDespesa',
     validarSchema(criarDespesaSchema),

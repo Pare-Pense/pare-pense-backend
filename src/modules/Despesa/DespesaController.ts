@@ -34,6 +34,35 @@ export class DespesaController {
         }
     }
 
+    async recuperarDespesasAll(req: Request, res: Response) {
+        try {
+            const { idUsuario } = req.params;
+
+            const idUsuarioVerificado = idSchema.parse(idUsuario);
+
+            await this.usuarioExiste(idUsuarioVerificado);
+
+            const despesas =
+                await despesaService.recuperarDespesasAll(idUsuarioVerificado);
+
+            res.status(200).json(despesas);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                if (error.message === 'Usuário não encontrado') {
+                    res.status(404).json({ erro: error.message });
+                    return;
+                }
+
+                res.status(400).json({ erro: error.message });
+                return;
+            }
+
+            res.status(500).json({
+                erro: 'Ocorreu um erro desconhecido no servidor',
+            });
+        }
+    }
+
     async recuperarDespesa(req: Request, res: Response) {
         try {
             const { idUsuario, idDespesa } = req.params;

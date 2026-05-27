@@ -12,6 +12,14 @@ export class DespesaService {
         return despesa;
     }
 
+    async recuperarDespesasAll(idUsuario: string) {
+        const despesas = await this.db.despesa.findMany({
+            where: { idUsuario },
+        });
+
+        return despesas;
+    }
+
     async recuperarDespesa(idUsuario: string, idDespesa: string) {
         const despesa = await this.db.despesa.findUnique({
             where: { id: idDespesa },
