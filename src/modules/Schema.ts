@@ -1,5 +1,3 @@
 import { z } from 'zod';
 
-export const idSchema = z.object({
-    id: z.uuid('O ID está em um formato inválido'),
-});
+export const idSchema = z.uuid('O ID está em um formato inválido');

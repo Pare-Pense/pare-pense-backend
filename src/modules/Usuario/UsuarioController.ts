@@ -22,7 +22,7 @@ export class UsuarioController {
 
     async recuperaUsuario(req: Request, res: Response) {
         try {
-            const { id } = idSchema.parse(req.params);
+            const id = idSchema.parse(req.params);
 
             const usuario = await usuarioService.recuperaUsuario(id);
 
@@ -46,7 +46,7 @@ export class UsuarioController {
 
     async atualizaUsuario(req: Request, res: Response) {
         try {
-            const { id } = idSchema.parse(req.params);
+            const id = idSchema.parse(req.params);
 
             const usuario = await usuarioService.atualizaUsuario(id, req.body);
 
@@ -65,7 +65,7 @@ export class UsuarioController {
 
     async atualizaSenhaUsuario(req: Request, res: Response) {
         try {
-            const { id } = idSchema.parse(req.params);
+            const id = idSchema.parse(req.params);
 
             const mensagem = await usuarioService.atualizaSenhaUsuario(
                 id,
@@ -89,7 +89,7 @@ export class UsuarioController {
 
     async deletaUsuario(req: Request, res: Response) {
         try {
-            const { id } = idSchema.parse(req.params);
+            const id = idSchema.parse(req.params);
 
             const message = await usuarioService.deletarUsuario(id);
 
