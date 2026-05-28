@@ -11,10 +11,6 @@ export const criarUsuarioSchema = z.object({
     limiteMensal: z.number().positive('O limite não pode ser negativo'),
 });
 
-export const idUsuarioSchema = z.object({
-    id: z.uuid('O ID está em um formato inválido'),
-});
-
 export const atualizaUsuarioSchema = criarUsuarioSchema
     .omit({ senha: true })
     .partial();
