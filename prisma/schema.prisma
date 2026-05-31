@@ -17,6 +17,7 @@ model Usuario {
     limiteMensal Decimal @db.Decimal(10, 2)
     createdAt DateTime @default(now())
     despesas Despesa[]
+    receitas Receita[]
 }
 
 model Despesa {
@@ -25,6 +26,16 @@ model Despesa {
     categoria Categoria
     data DateTime @db.Date
     valor Decimal @db.Decimal(10, 2)
+    horario DateTime @db.Time
+    idUsuario String
+    usuario Usuario @relation(fields: [idUsuario], references: [id], onDelete: Cascade)
+}
+
+model Receita {
+    id String @id @default(uuid())
+    nome String
+    valor Decimal @db.Decimal(10, 2)
+    data DateTime @db.Date
     horario DateTime @db.Time
     idUsuario String
     usuario Usuario @relation(fields: [idUsuario], references: [id], onDelete: Cascade)
