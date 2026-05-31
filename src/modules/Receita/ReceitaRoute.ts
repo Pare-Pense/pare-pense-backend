@@ -25,8 +25,8 @@ routes.patch(
     '/:idUsuario/:idReceita',
     validarSchema(atualizarReceitaSchema),
     (req: Request, res: Response) =>
-        receitaController.atualizarReceita(req,res)
-)
+        receitaController.atualizarReceita(req, res),
+);
 
 routes.delete('/:idUsuario/:idReceita', (req: Request, res: Response) =>
     receitaController.deletarReceita(req, res),
