@@ -274,4 +274,57 @@ describe('UsuarioService - Testes de Unidade', () => {
             ).rejects.toThrow('Usuário não encontrado');
         });
     });
+
+    describe('Função: Login usuário', () => {
+        it('fluxo de login de usuário', async () => {
+            mockPrisma.usuario.findUnique.mockResolvedValue({
+                id: '123-uuid',
+                nome: 'Teste',
+                email: 'teste@teste.com',
+                senha: '$2a$10$fFY8Eu3nUqH5x2G1kRsKpObwmbNxldZDgUv10V5o87Yu2oIg4AAQq',
+                rendaMensal: new Prisma.Decimal(5000),
+                limiteMensal: new Prisma.Decimal(2000),
+                dataNascimento: new Date('1990-01-01'),
+                createdAt: new Date(),
+            });
+
+            const body = await usuarioService.loginUsuario({
+                email: 'teste@teste.com',
+                senha: '12345678',
+            });
+
+            expect(body.token).toBeDefined();
+        });
+
+        it('lança erro ao não encontrar usuário', async () => {
+            mockPrisma.usuario.findUnique.mockResolvedValue(null);
+
+            await expect(
+                usuarioService.loginUsuario({
+                    email: 'teste@teste.com',
+                    senha: '12345678',
+                }),
+            ).rejects.toThrow('Usuário não encontrado');
+        });
+
+        it('lança erro ao senha incorreta', async () => {
+            mockPrisma.usuario.findUnique.mockResolvedValue({
+                id: '123-uuid',
+                nome: 'Teste',
+                email: 'teste@teste.com',
+                senha: '$2a$10$fFY8Eu3nUqH5x2G1kRsKpObwmbNxldZDgUv10V5o87Yu2oIg4AAQq',
+                rendaMensal: new Prisma.Decimal(5000),
+                limiteMensal: new Prisma.Decimal(2000),
+                dataNascimento: new Date('1990-01-01'),
+                createdAt: new Date(),
+            });
+
+            await expect(
+                usuarioService.loginUsuario({
+                    email: 'teste@teste.com',
+                    senha: 'senha_errada',
+                }),
+            ).rejects.toThrow('Senha inválida');
+        });
+    });
 });

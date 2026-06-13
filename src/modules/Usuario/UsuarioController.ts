@@ -110,4 +110,21 @@ export class UsuarioController {
             });
         }
     }
+
+    async loginUsuario(req: Request, res: Response) {
+        try {
+            const body = await usuarioService.loginUsuario(req.body);
+
+            res.status(200).json(body);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                res.status(400).json({ erro: error.message });
+                return;
+            }
+
+            res.status(500).json({
+                erro: 'Ocorreu um erro desconhecido no servidor',
+            });
+        }
+    }
 }

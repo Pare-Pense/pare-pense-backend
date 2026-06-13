@@ -4,6 +4,7 @@ import {
     criarUsuarioSchema,
     atualizaUsuarioSchema,
     atualizaSenhaSchema,
+    loginUsuarioSchema,
 } from './UsuarioSchema.js';
 import { UsuarioController } from './UsuarioController.js';
 
@@ -27,5 +28,6 @@ routes.patch(
     usuarioController.atualizaSenhaUsuario,
 );
 routes.delete('/:id', usuarioController.deletaUsuario);
+routes.post('/login', validarSchema(loginUsuarioSchema), usuarioController.loginUsuario);
 
 export { routes };

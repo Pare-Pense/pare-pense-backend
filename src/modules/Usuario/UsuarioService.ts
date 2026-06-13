@@ -1,5 +1,10 @@
+import { criarTokenUser } from '../../lib/auth.js';
 import { prisma } from '../../lib/prisma.js';
-import type { AtualizaSenhaSchema, UsuarioSchema } from './UsuarioSchema.js';
+import type {
+    AtualizaSenhaSchema,
+    LoginUsuarioSchema,
+    UsuarioSchema,
+} from './UsuarioSchema.js';
 import bcrypt from 'bcrypt';
 
 export class UsuarioService {
@@ -115,6 +120,22 @@ export class UsuarioService {
         await this.db.usuario.delete({ where: { id } });
 
         return { message: 'Usuário deletado com sucesso.' };
+    }
+
+    async loginUsuario(data: LoginUsuarioSchema) {
+        const usuario = await this.db.usuario.findUnique({
+            where: { email: data.email },
+        });
+
+        if (!usuario) {
+            throw new Error('Usuário não encontrado');
+        }
+
+        if (!(await bcrypt.compare(data.senha, usuario.senha))) {
+            throw new Error('Senha inválida');
+        }
+
+        return { token: criarTokenUser(usuario.id) };
     }
 }
 
