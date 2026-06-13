@@ -5,6 +5,7 @@ import type {
     LoginUsuarioSchema,
     UsuarioSchema,
 } from './UsuarioSchema.js';
+import type { Usuario } from '../../generated/prisma/client.js';
 import bcrypt from 'bcrypt';
 
 export class UsuarioService {
@@ -41,6 +42,16 @@ export class UsuarioService {
         };
     }
 
+    protected usuarioParaDto(usuario: Usuario) {
+        const { senha: _, ...usuarioSemSenha } = usuario;
+
+        return {
+            ...usuarioSemSenha,
+            rendaMensal: usuarioSemSenha.rendaMensal.toNumber(),
+            limiteMensal: usuarioSemSenha.limiteMensal.toNumber(),
+        };
+    }
+
     async recuperaUsuario(id: string) {
         const usuario = await this.db.usuario.findUnique({
             where: { id },
@@ -50,13 +61,7 @@ export class UsuarioService {
             throw new Error('Usuário não encontrado');
         }
 
-        const { senha: _, ...usuarioSemSenha } = usuario;
-
-        return {
-            ...usuarioSemSenha,
-            rendaMensal: usuarioSemSenha.rendaMensal.toNumber(),
-            limiteMensal: usuarioSemSenha.limiteMensal.toNumber(),
-        };
+        return this.usuarioParaDto(usuario);
     }
 
     async atualizaUsuario(id: string, data: UsuarioSchema) {
@@ -135,7 +140,9 @@ export class UsuarioService {
             throw new Error('Senha inválida');
         }
 
-        return { token: criarTokenUser(usuario.id) };
+        const dto = this.usuarioParaDto(usuario);
+
+        return { token: criarTokenUser(usuario.id), usuario: dto };
     }
 }
 
