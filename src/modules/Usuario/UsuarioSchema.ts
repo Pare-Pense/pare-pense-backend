@@ -20,6 +20,13 @@ export const atualizaSenhaSchema = z.object({
     senhaNova: z.string().min(8, 'A senha deve ter no mínimo 8 caracteres'),
 });
 
+export const loginUsuarioSchema = z.object({
+    email: z.email('Formato de e-mail inválido'),
+    senha: z.string().min(1, 'A senha é obrigatória'),
+});
+
 export type AtualizaSenhaSchema = z.infer<typeof atualizaSenhaSchema>;
 
 export type UsuarioSchema = z.infer<typeof criarUsuarioSchema>;
+
+export type LoginUsuarioSchema = z.infer<typeof loginUsuarioSchema>;

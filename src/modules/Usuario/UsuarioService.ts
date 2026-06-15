@@ -1,5 +1,11 @@
+import { criarTokenUser } from '../../lib/auth.js';
 import { prisma } from '../../lib/prisma.js';
-import type { AtualizaSenhaSchema, UsuarioSchema } from './UsuarioSchema.js';
+import type {
+    AtualizaSenhaSchema,
+    LoginUsuarioSchema,
+    UsuarioSchema,
+} from './UsuarioSchema.js';
+import type { Usuario } from '../../generated/prisma/client.js';
 import bcrypt from 'bcrypt';
 
 export class UsuarioService {
@@ -36,6 +42,16 @@ export class UsuarioService {
         };
     }
 
+    protected usuarioParaDto(usuario: Usuario) {
+        const { senha: _, ...usuarioSemSenha } = usuario;
+
+        return {
+            ...usuarioSemSenha,
+            rendaMensal: usuarioSemSenha.rendaMensal.toNumber(),
+            limiteMensal: usuarioSemSenha.limiteMensal.toNumber(),
+        };
+    }
+
     async recuperaUsuario(id: string) {
         const usuario = await this.db.usuario.findUnique({
             where: { id },
@@ -45,13 +61,7 @@ export class UsuarioService {
             throw new Error('Usuário não encontrado');
         }
 
-        const { senha: _, ...usuarioSemSenha } = usuario;
-
-        return {
-            ...usuarioSemSenha,
-            rendaMensal: usuarioSemSenha.rendaMensal.toNumber(),
-            limiteMensal: usuarioSemSenha.limiteMensal.toNumber(),
-        };
+        return this.usuarioParaDto(usuario);
     }
 
     async atualizaUsuario(id: string, data: UsuarioSchema) {
@@ -115,6 +125,24 @@ export class UsuarioService {
         await this.db.usuario.delete({ where: { id } });
 
         return { message: 'Usuário deletado com sucesso.' };
+    }
+
+    async loginUsuario(data: LoginUsuarioSchema) {
+        const usuario = await this.db.usuario.findUnique({
+            where: { email: data.email },
+        });
+
+        if (!usuario) {
+            throw new Error('Usuário não encontrado');
+        }
+
+        if (!(await bcrypt.compare(data.senha, usuario.senha))) {
+            throw new Error('Senha inválida');
+        }
+
+        const dto = this.usuarioParaDto(usuario);
+
+        return { token: criarTokenUser(usuario.id), usuario: dto };
     }
 }
 
