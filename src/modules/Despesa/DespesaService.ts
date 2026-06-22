@@ -1,3 +1,5 @@
+import type { Categoria } from '../../generated/prisma/enums.js';
+import type { Despesa } from '../../generated/prisma/client.js';
 import { prisma } from '../../lib/prisma.js';
 import type { DespesaSchema } from './DespesaSchema.js';
 
@@ -9,6 +11,14 @@ export class DespesaService {
         hour: '2-digit',
         minute: '2-digit',
     });
+
+    private formataDespesa(despesa: Despesa) {
+        return {
+            ...despesa,
+            valor: despesa.valor.toNumber(),
+            horario: this.formatadorHorario.format(despesa.horario),
+        };
+    }
 
     async cadastrarDespesa(data: DespesaSchema) {
         const despesa = await this.db.despesa.create({
@@ -22,16 +32,15 @@ export class DespesaService {
         };
     }
 
-    async recuperarDespesasAll(idUsuario: string) {
+    async recuperarDespesasAll(idUsuario: string, categoria?: Categoria) {
         const despesas = await this.db.despesa.findMany({
-            where: { idUsuario },
+            where: {
+                idUsuario: idUsuario,
+                ...(categoria && { categoria: categoria }),
+            },
         });
 
-        return despesas.map((despesa) => ({
-            ...despesa,
-            valor: despesa.valor.toNumber(),
-            horario: this.formatadorHorario.format(despesa.horario),
-        }));
+        return despesas.map((despesa) => this.formataDespesa(despesa));
     }
 
     async recuperarDespesa(idUsuario: string, idDespesa: string) {
@@ -52,6 +61,38 @@ export class DespesaService {
             valor: despesa.valor.toNumber(),
             horario: this.formatadorHorario.format(despesa.horario),
         };
+    }
+
+    async recuperarMediaGastosPorCategoria(
+        idUsuario: string,
+        periodo: 'semanal' | 'mensal' | 'anual',
+    ) {
+        const dataFim = new Date();
+        const dataInicio = new Date();
+
+        dataInicio.setHours(0, 0, 0, 0);
+        dataFim.setHours(23, 59, 59, 999);
+
+        if (periodo === 'semanal') {
+            const diaSemana = dataInicio.getDay();
+            dataInicio.setDate(dataInicio.getDate() - diaSemana);
+            dataFim.setDate(dataFim.getDate() + (6 - diaSemana));
+        } else if (periodo === 'mensal') {
+            dataInicio.setDate(1);
+            dataFim.setMonth(dataFim.getMonth() + 1, 0);
+        } else if (periodo === 'anual') {
+            dataInicio.setMonth(0, 1);
+            dataFim.setMonth(0, 1);
+            dataFim.setFullYear(dataFim.getFullYear() + 1, 11, 31);
+        }
+
+        const mediaGastosPorCategoria = await this.db.despesa.groupBy({
+            where: { idUsuario, data: { gte: dataInicio, lte: dataFim } },
+            by: ['categoria'],
+            _avg: { valor: true },
+        });
+
+        return mediaGastosPorCategoria;
     }
 
     async atualizaDespesa(
