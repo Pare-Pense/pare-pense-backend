@@ -152,7 +152,7 @@ export class UsuarioService {
         dataInicio.setDate(1);
         dataFim.setMonth(dataFim.getMonth() + 1, 0);
 
-        const [usuario, somaDespesas] = await Promise.all([
+        const [usuario, somaDespesas, somaReceitas] = await Promise.all([
             this.db.usuario.findUnique({
                 where: { id },
                 select: {
@@ -170,21 +170,34 @@ export class UsuarioService {
                     valor: true,
                 },
             }),
+
+            this.db.receita.aggregate({
+                where: {
+                    idUsuario: id,
+                    data: { gte: dataInicio, lte: dataFim },
+                },
+                _sum: { valor: true },
+            }),
         ]);
 
         if (!usuario) {
             throw new Error('Usuário não encontrado');
         }
 
-        const valor = !somaDespesas._sum.valor
+        const valorDespesas = !somaDespesas._sum.valor
             ? Prisma.Decimal(0)
             : somaDespesas._sum.valor;
 
-        const porc = valor.times(100).div(usuario.limiteMensal);
+        const valorReceitas = !somaReceitas._sum.valor
+            ? Prisma.Decimal(0)
+            : somaReceitas._sum.valor;
+
+        const porc = valorDespesas.times(100).div(usuario.limiteMensal);
 
         return {
             ...usuario,
-            totalDespesas: valor,
+            totalDespesas: valorDespesas,
+            totalReceitas: valorReceitas,
             limiteUsadoPorc: porc,
         };
     }
