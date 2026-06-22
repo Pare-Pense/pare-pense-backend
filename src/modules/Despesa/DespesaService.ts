@@ -63,14 +63,6 @@ export class DespesaService {
         };
     }
 
-    // async recuperarDespesasCategoria(idUsuario: string, categoria: Categoria) {
-    //     const despesas = await this.db.despesa.findMany({
-    //         where: { idUsuario, categoria },
-    //     });
-
-    //     return despesas.map((despesa) => this.formataDespesa(despesa));
-    // }
-
     async recuperarMediaGastosPorCategoria(
         idUsuario: string,
         periodo: 'semanal' | 'mensal' | 'anual',

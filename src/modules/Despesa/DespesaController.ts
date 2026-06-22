@@ -50,18 +50,6 @@ export class DespesaController {
                 categoriaEnum,
             );
 
-            // if (req.query.categoria) {
-            //     const categoriaEnum = validaCategoria.parse(req.query.categoria);
-
-            //     despesas = await despesaService.recuperarDespesasCategoria(
-            //         idUsuarioVerificado,
-            //         categoriaEnum,
-            //     );
-            // } else {
-            //     despesas =
-            //         await despesaService.recuperarDespesasAll(idUsuarioVerificado);
-            // }
-
             res.status(200).json(despesas);
         } catch (error: unknown) {
             if (error instanceof Error) {
@@ -111,39 +99,6 @@ export class DespesaController {
             });
         }
     }
-
-    // async recuperarDespesasCategoria(req: Request, res: Response) {
-    //     try {
-    //         const { idUsuario } = req.params;
-
-    //         const idUsuarioVerificado = idSchema.parse(idUsuario);
-
-    //         const categoriaEnum = validaCategoria.parse(req.query.categoria);
-
-    //         await this.usuarioExiste(idUsuarioVerificado);
-
-    //         const despesas = await despesaService.recuperarDespesasCategoria(
-    //             idUsuarioVerificado,
-    //             categoriaEnum,
-    //         );
-
-    //         res.status(200).json(despesas);
-    //     } catch (error: unknown) {
-    //         if (error instanceof Error) {
-    //             if (error.message === 'Usuário não encontrado') {
-    //                 res.status(404).json({ erro: error.message });
-    //                 return;
-    //             }
-
-    //             res.status(400).json({ erro: error.message });
-    //             return;
-    //         }
-
-    //         res.status(500).json({
-    //             erro: 'Ocorreu um erro desconhecido no servidor',
-    //         });
-    //     }
-    // }
 
     async recuperarMediaGastosPorCategoria(req: Request, res: Response) {
         try {
