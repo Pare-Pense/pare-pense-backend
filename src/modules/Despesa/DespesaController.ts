@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import { despesaService } from './DespesaService.js';
 import { usuarioService } from '../Usuario/UsuarioService.js';
 import { idSchema } from '../Schema.js';
+import { periodoSchema, validaCategoria } from './DespesaSchema.js';
 
 export class DespesaController {
     private async usuarioExiste(id: string) {
@@ -42,8 +43,24 @@ export class DespesaController {
 
             await this.usuarioExiste(idUsuarioVerificado);
 
-            const despesas =
-                await despesaService.recuperarDespesasAll(idUsuarioVerificado);
+            const categoriaEnum = validaCategoria.parse(req.query.categoria);
+
+            const despesas = await despesaService.recuperarDespesasAll(
+                idUsuarioVerificado,
+                categoriaEnum,
+            );
+
+            // if (req.query.categoria) {
+            //     const categoriaEnum = validaCategoria.parse(req.query.categoria);
+
+            //     despesas = await despesaService.recuperarDespesasCategoria(
+            //         idUsuarioVerificado,
+            //         categoriaEnum,
+            //     );
+            // } else {
+            //     despesas =
+            //         await despesaService.recuperarDespesasAll(idUsuarioVerificado);
+            // }
 
             res.status(200).json(despesas);
         } catch (error: unknown) {
@@ -78,6 +95,73 @@ export class DespesaController {
             );
 
             res.status(200).json(despesa);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                if (error.message === 'Usuário não encontrado') {
+                    res.status(404).json({ erro: error.message });
+                    return;
+                }
+
+                res.status(400).json({ erro: error.message });
+                return;
+            }
+
+            res.status(500).json({
+                erro: 'Ocorreu um erro desconhecido no servidor',
+            });
+        }
+    }
+
+    // async recuperarDespesasCategoria(req: Request, res: Response) {
+    //     try {
+    //         const { idUsuario } = req.params;
+
+    //         const idUsuarioVerificado = idSchema.parse(idUsuario);
+
+    //         const categoriaEnum = validaCategoria.parse(req.query.categoria);
+
+    //         await this.usuarioExiste(idUsuarioVerificado);
+
+    //         const despesas = await despesaService.recuperarDespesasCategoria(
+    //             idUsuarioVerificado,
+    //             categoriaEnum,
+    //         );
+
+    //         res.status(200).json(despesas);
+    //     } catch (error: unknown) {
+    //         if (error instanceof Error) {
+    //             if (error.message === 'Usuário não encontrado') {
+    //                 res.status(404).json({ erro: error.message });
+    //                 return;
+    //             }
+
+    //             res.status(400).json({ erro: error.message });
+    //             return;
+    //         }
+
+    //         res.status(500).json({
+    //             erro: 'Ocorreu um erro desconhecido no servidor',
+    //         });
+    //     }
+    // }
+
+    async recuperarMediaGastosPorCategoria(req: Request, res: Response) {
+        try {
+            const { idUsuario, periodo } = req.params;
+
+            const idUsuarioVerificado = idSchema.parse(idUsuario);
+
+            await this.usuarioExiste(idUsuarioVerificado);
+
+            const periodoValidado = periodoSchema.parse(periodo);
+
+            const despesas =
+                await despesaService.recuperarMediaGastosPorCategoria(
+                    idUsuarioVerificado,
+                    periodoValidado,
+                );
+
+            res.status(200).json(despesas);
         } catch (error: unknown) {
             if (error instanceof Error) {
                 if (error.message === 'Usuário não encontrado') {

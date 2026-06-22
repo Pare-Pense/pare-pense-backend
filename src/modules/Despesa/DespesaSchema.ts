@@ -33,5 +33,18 @@ export const atualizarDespesaSchema = criarDespesaSchema
     .omit({ idUsuario: true })
     .partial();
 
+export const validaCategoria = z
+    .enum(Categoria, {
+        error: () => ({
+            message:
+                'Categoria inválida. Apenas: ALIMENTACAO, LAZER, TRANSPORTE, COMPRAS, CONTAS ou OUTROS',
+        }),
+    })
+    .optional();
+
+export const periodoSchema = z.enum(['semanal', 'mensal', 'anual'], {
+    error: () => ({ message: 'Período inválido' }),
+});
+
 export type DespesaSchema = z.infer<typeof criarDespesaSchema>;
 export type AtualizaDespesaSchema = z.infer<typeof atualizarDespesaSchema>;
