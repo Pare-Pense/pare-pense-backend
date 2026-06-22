@@ -12,6 +12,7 @@ import { validarAuth } from '../../middlewares/validarAuth.js';
 const routes: Router = Router();
 const usuarioController = new UsuarioController();
 
+routes.get('/sumario/:id', validarAuth('id'), usuarioController.sumarioUsuario);
 routes.get('/:id', validarAuth('id'), usuarioController.recuperaUsuario);
 routes.post(
     '/criarUsuario',

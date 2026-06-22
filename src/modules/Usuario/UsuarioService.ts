@@ -5,7 +5,7 @@ import type {
     LoginUsuarioSchema,
     UsuarioSchema,
 } from './UsuarioSchema.js';
-import type { Usuario } from '../../generated/prisma/client.js';
+import { Prisma, type Usuario } from '../../generated/prisma/client.js';
 import bcrypt from 'bcrypt';
 
 export class UsuarioService {
@@ -143,6 +143,50 @@ export class UsuarioService {
         const dto = this.usuarioParaDto(usuario);
 
         return { token: criarTokenUser(usuario.id), usuario: dto };
+    }
+
+    async sumarioUsuario(id: string) {
+        const dataFim = new Date();
+        const dataInicio = new Date();
+
+        dataInicio.setDate(1);
+        dataFim.setMonth(dataFim.getMonth() + 1, 0);
+
+        const [usuario, somaDespesas] = await Promise.all([
+            this.db.usuario.findUnique({
+                where: { id },
+                select: {
+                    limiteMensal: true,
+                    rendaMensal: true,
+                },
+            }),
+
+            this.db.despesa.aggregate({
+                where: {
+                    idUsuario: id,
+                    data: { gte: dataInicio, lte: dataFim },
+                },
+                _sum: {
+                    valor: true,
+                },
+            }),
+        ]);
+
+        if (!usuario) {
+            throw new Error('Usuário não encontrado');
+        }
+
+        const valor = !somaDespesas._sum.valor
+            ? Prisma.Decimal(0)
+            : somaDespesas._sum.valor;
+
+        const porc = valor.times(100).div(usuario.limiteMensal);
+
+        return {
+            ...usuario,
+            totalDespesas: valor,
+            limiteUsadoPorc: porc,
+        };
     }
 }
 
