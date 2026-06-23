@@ -63,7 +63,7 @@ export class DespesaService {
         };
     }
 
-    async recuperarMediaGastosPorCategoria(
+    async recuperarSomaGastosPorCategoria(
         idUsuario: string,
         periodo: 'semanal' | 'mensal' | 'anual',
     ) {
@@ -86,13 +86,18 @@ export class DespesaService {
             dataFim.setFullYear(dataFim.getFullYear() + 1, 11, 31);
         }
 
-        const mediaGastosPorCategoria = await this.db.despesa.groupBy({
+        const somaGastosPorCategoria = await this.db.despesa.groupBy({
             where: { idUsuario, data: { gte: dataInicio, lte: dataFim } },
             by: ['categoria'],
-            _avg: { valor: true },
+            _sum: { valor: true },
         });
 
-        return mediaGastosPorCategoria;
+        const somaGastosFormatado = somaGastosPorCategoria.map((gastos) => ({
+            categoria: gastos.categoria,
+            valor: gastos._sum.valor,
+        }));
+
+        return somaGastosFormatado;
     }
 
     async atualizaDespesa(
