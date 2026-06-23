@@ -132,12 +132,8 @@ export class UsuarioService {
             where: { email: data.email },
         });
 
-        if (!usuario) {
-            throw new Error('Usuário não encontrado');
-        }
-
-        if (!(await bcrypt.compare(data.senha, usuario.senha))) {
-            throw new Error('Senha inválida');
+        if (!usuario || !(await bcrypt.compare(data.senha, usuario.senha))) {
+            throw new Error('Email ou senha inválido');
         }
 
         const dto = this.usuarioParaDto(usuario);
