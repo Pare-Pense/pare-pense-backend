@@ -20,7 +20,6 @@ describe('DespesaService - Testes de Unidade', () => {
                 categoria: 'ALIMENTACAO',
                 data: new Date('2026-05-18'),
                 valor: new Prisma.Decimal(51.01),
-                horario: new Date(2026, 5, 18, 19, 30),
                 idUsuario: '321-uuid',
             });
 
@@ -29,7 +28,6 @@ describe('DespesaService - Testes de Unidade', () => {
                 categoria: 'ALIMENTACAO',
                 data: new Date('2026-05-18'),
                 valor: 51.99,
-                horario: new Date(2026, 5, 18, 19, 30),
                 idUsuario: '321-uuid',
             });
 
@@ -48,7 +46,6 @@ describe('DespesaService - Testes de Unidade', () => {
                     categoria: 'ALIMENTACAO',
                     data: new Date('2026-05-18'),
                     valor: new Prisma.Decimal(51.8),
-                    horario: new Date(2026, 5, 18, 19, 30),
                     idUsuario: '321-uuid',
                 },
             ]);
@@ -67,7 +64,6 @@ describe('DespesaService - Testes de Unidade', () => {
                 categoria: 'ALIMENTACAO',
                 data: new Date('2026-05-18'),
                 valor: new Prisma.Decimal(51.8),
-                horario: new Date(2026, 5, 18, 19, 30),
                 idUsuario: '321-uuid',
             });
 
@@ -95,7 +91,6 @@ describe('DespesaService - Testes de Unidade', () => {
                 categoria: 'ALIMENTACAO',
                 data: new Date('2026-05-18'),
                 valor: new Prisma.Decimal(51.8),
-                horario: new Date(2026, 5, 18, 19, 30),
                 idUsuario: '321-uuid',
             });
 
@@ -113,7 +108,6 @@ describe('DespesaService - Testes de Unidade', () => {
                 categoria: 'ALIMENTACAO',
                 data: new Date('2026-05-18'),
                 valor: new Prisma.Decimal(51.8),
-                horario: new Date(2026, 5, 18, 19, 30),
                 idUsuario: '321-uuid',
             });
 
@@ -123,7 +117,6 @@ describe('DespesaService - Testes de Unidade', () => {
                 categoria: 'LAZER',
                 data: new Date('2026-05-18'),
                 valor: new Prisma.Decimal(58),
-                horario: new Date(2026, 5, 18, 19, 30),
                 idUsuario: '321-uuid',
             });
 
@@ -135,7 +128,6 @@ describe('DespesaService - Testes de Unidade', () => {
                     categoria: 'LAZER',
                     data: new Date('2026-05-18'),
                     valor: 58,
-                    horario: new Date(2026, 5, 18, 19, 30),
                     idUsuario: '321-uuid',
                 },
             );
@@ -154,7 +146,6 @@ describe('DespesaService - Testes de Unidade', () => {
                     categoria: 'LAZER',
                     data: new Date('2026-05-18'),
                     valor: 58,
-                    horario: new Date(2026, 5, 18, 19, 30),
                     idUsuario: '321-uuid',
                 }),
             ).rejects.toThrow('Despesa não existe');
@@ -167,7 +158,6 @@ describe('DespesaService - Testes de Unidade', () => {
                 categoria: 'ALIMENTACAO',
                 data: new Date('2026-05-18'),
                 valor: new Prisma.Decimal(51.8),
-                horario: new Date(2026, 5, 18, 19, 30),
                 idUsuario: '321-uuid',
             });
 
@@ -177,7 +167,6 @@ describe('DespesaService - Testes de Unidade', () => {
                     categoria: 'LAZER',
                     data: new Date('2026-05-18'),
                     valor: 58,
-                    horario: new Date(2026, 5, 18, 19, 30),
                     idUsuario: '321-uuid',
                 }),
             ).rejects.toThrow('Despesa não pertence a esse usuário');
@@ -192,7 +181,6 @@ describe('DespesaService - Testes de Unidade', () => {
                 categoria: 'ALIMENTACAO',
                 data: new Date('2026-05-18'),
                 valor: new Prisma.Decimal(51.8),
-                horario: new Date(2026, 5, 18, 19, 30),
                 idUsuario: '321-uuid',
             });
 
@@ -219,7 +207,6 @@ describe('DespesaService - Testes de Unidade', () => {
                 categoria: 'ALIMENTACAO',
                 data: new Date('2026-05-18'),
                 valor: new Prisma.Decimal(51.8),
-                horario: new Date(2026, 5, 18, 19, 30),
                 idUsuario: '321-uuid',
             });
 

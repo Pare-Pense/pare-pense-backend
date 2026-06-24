@@ -4,12 +4,6 @@ import type { ReceitaSchema } from './ReceitaSchema.js';
 export class ReceitaService {
     constructor(private db = prisma) {}
 
-    private formatadorHorario = new Intl.DateTimeFormat('pt-BR', {
-        timeZone: 'America/Sao_Paulo',
-        hour: '2-digit',
-        minute: '2-digit',
-    });
-
     async cadastrarReceita(data: ReceitaSchema) {
         const receita = await this.db.receita.create({
             data,
@@ -18,7 +12,6 @@ export class ReceitaService {
         return {
             ...receita,
             valor: receita.valor.toNumber(),
-            horario: this.formatadorHorario.format(receita.horario),
         };
     }
 
@@ -30,7 +23,6 @@ export class ReceitaService {
         return receitas.map((receita) => ({
             ...receita,
             valor: receita.valor.toNumber(),
-            horario: this.formatadorHorario.format(receita.horario),
         }));
     }
 
@@ -50,7 +42,6 @@ export class ReceitaService {
         return {
             ...receita,
             valor: receita.valor.toNumber(),
-            horario: this.formatadorHorario.format(receita.horario),
         };
     }
 
@@ -69,7 +60,6 @@ export class ReceitaService {
         return {
             ...receita,
             valor: receita.valor.toNumber(),
-            horario: this.formatadorHorario.format(receita.horario),
         };
     }
 

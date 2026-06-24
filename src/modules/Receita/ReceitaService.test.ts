@@ -19,7 +19,6 @@ describe('ReceitaService - Testes de Unidade', () => {
                 nome: 'Salário',
                 data: new Date('2026-05-18'),
                 valor: new Prisma.Decimal(3500),
-                horario: new Date(2026, 5, 18, 8, 0),
                 idUsuario: '321-uuid',
             });
 
@@ -27,7 +26,6 @@ describe('ReceitaService - Testes de Unidade', () => {
                 nome: 'Salário',
                 data: new Date('2026-05-18'),
                 valor: 3500,
-                horario: new Date(2026, 5, 18, 8, 0),
                 idUsuario: '321-uuid',
             });
 
@@ -45,7 +43,6 @@ describe('ReceitaService - Testes de Unidade', () => {
                     nome: 'Salário',
                     data: new Date('2026-05-18'),
                     valor: new Prisma.Decimal(3500),
-                    horario: new Date(2026, 5, 18, 8, 0),
                     idUsuario: '321-uuid',
                 },
             ]);
@@ -63,7 +60,6 @@ describe('ReceitaService - Testes de Unidade', () => {
                 nome: 'Salário',
                 data: new Date('2026-05-18'),
                 valor: new Prisma.Decimal(3500),
-                horario: new Date(2026, 5, 18, 8, 0),
                 idUsuario: '321-uuid',
             });
 
@@ -90,7 +86,6 @@ describe('ReceitaService - Testes de Unidade', () => {
                 nome: 'Salário',
                 data: new Date('2026-05-18'),
                 valor: new Prisma.Decimal(3500),
-                horario: new Date(2026, 5, 18, 8, 0),
                 idUsuario: '321-uuid',
             });
 
@@ -107,7 +102,6 @@ describe('ReceitaService - Testes de Unidade', () => {
                 nome: 'Salário',
                 data: new Date('2026-05-18'),
                 valor: new Prisma.Decimal(3500),
-                horario: new Date(2026, 5, 18, 8, 0),
                 idUsuario: '321-uuid',
             });
 
@@ -116,7 +110,6 @@ describe('ReceitaService - Testes de Unidade', () => {
                 nome: 'Freelance',
                 data: new Date('2026-05-18'),
                 valor: new Prisma.Decimal(4200),
-                horario: new Date(2026, 5, 18, 8, 0),
                 idUsuario: '321-uuid',
             });
 
@@ -127,7 +120,6 @@ describe('ReceitaService - Testes de Unidade', () => {
                     nome: 'Freelance',
                     data: new Date('2026-05-18'),
                     valor: 4200,
-                    horario: new Date(2026, 5, 18, 8, 0),
                     idUsuario: '321-uuid',
                 },
             );
@@ -145,7 +137,6 @@ describe('ReceitaService - Testes de Unidade', () => {
                     nome: 'Freelance',
                     data: new Date('2026-05-18'),
                     valor: 4200,
-                    horario: new Date(2026, 5, 18, 8, 0),
                     idUsuario: '321-uuid',
                 }),
             ).rejects.toThrow('Receita não existe');
@@ -157,7 +148,6 @@ describe('ReceitaService - Testes de Unidade', () => {
                 nome: 'Salário',
                 data: new Date('2026-05-18'),
                 valor: new Prisma.Decimal(3500),
-                horario: new Date(2026, 5, 18, 8, 0),
                 idUsuario: '321-uuid',
             });
 
@@ -166,7 +156,6 @@ describe('ReceitaService - Testes de Unidade', () => {
                     nome: 'Freelance',
                     data: new Date('2026-05-18'),
                     valor: 4200,
-                    horario: new Date(2026, 5, 18, 8, 0),
                     idUsuario: '321-uuid',
                 }),
             ).rejects.toThrow('Receita não pertence a esse usuário');
@@ -180,7 +169,6 @@ describe('ReceitaService - Testes de Unidade', () => {
                 nome: 'Salário',
                 data: new Date('2026-05-18'),
                 valor: new Prisma.Decimal(3500),
-                horario: new Date(2026, 5, 18, 8, 0),
                 idUsuario: '321-uuid',
             });
 
@@ -206,7 +194,6 @@ describe('ReceitaService - Testes de Unidade', () => {
                 nome: 'Salário',
                 data: new Date('2026-05-18'),
                 valor: new Prisma.Decimal(3500),
-                horario: new Date(2026, 5, 18, 8, 0),
                 idUsuario: '321-uuid',
             });
 
