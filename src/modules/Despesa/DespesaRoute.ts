@@ -11,7 +11,7 @@ routes.get(
     '/media/:idUsuario/:periodo',
     validarAuth('idUsuario'),
     (req: Request, res: Response) =>
-        despesaController.recuperarMediaGastosPorCategoria(req, res),
+        despesaController.recuperarSomaGastosPorCategoria(req, res),
 );
 routes.get(
     '/:idUsuario/:idDespesa',

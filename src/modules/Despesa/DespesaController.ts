@@ -100,7 +100,7 @@ export class DespesaController {
         }
     }
 
-    async recuperarMediaGastosPorCategoria(req: Request, res: Response) {
+    async recuperarSomaGastosPorCategoria(req: Request, res: Response) {
         try {
             const { idUsuario, periodo } = req.params;
 
@@ -111,7 +111,7 @@ export class DespesaController {
             const periodoValidado = periodoSchema.parse(periodo);
 
             const despesas =
-                await despesaService.recuperarMediaGastosPorCategoria(
+                await despesaService.recuperarSomaGastosPorCategoria(
                     idUsuarioVerificado,
                     periodoValidado,
                 );
