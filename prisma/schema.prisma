@@ -24,9 +24,8 @@ model Despesa {
     id String @id @default(uuid())
     nome String
     categoria Categoria
-    data DateTime @db.Date
+    data DateTime
     valor Decimal @db.Decimal(10, 2)
-    horario DateTime @db.Time
     idUsuario String
     usuario Usuario @relation(fields: [idUsuario], references: [id], onDelete: Cascade)
 }
@@ -35,8 +34,7 @@ model Receita {
     id String @id @default(uuid())
     nome String
     valor Decimal @db.Decimal(10, 2)
-    data DateTime @db.Date
-    horario DateTime @db.Time
+    data DateTime
     idUsuario String
     usuario Usuario @relation(fields: [idUsuario], references: [id], onDelete: Cascade)
 }
