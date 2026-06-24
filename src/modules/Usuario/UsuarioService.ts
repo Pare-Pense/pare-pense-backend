@@ -196,9 +196,9 @@ export class UsuarioService {
 
         return {
             ...usuario,
-            totalDespesas: valorDespesas,
-            totalReceitas: valorReceitas,
-            limiteUsadoPorc: porc,
+            totalDespesas: valorDespesas.toNumber(),
+            totalReceitas: valorReceitas.toNumber(),
+            limiteUsadoPorc: porc.toNumber(),
         };
     }
 }

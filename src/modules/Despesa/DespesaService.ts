@@ -94,7 +94,7 @@ export class DespesaService {
 
         const somaGastosFormatado = somaGastosPorCategoria.map((gastos) => ({
             categoria: gastos.categoria,
-            valor: gastos._sum.valor,
+            valor: gastos._sum.valor?.toNumber(),
         }));
 
         return somaGastosFormatado;
