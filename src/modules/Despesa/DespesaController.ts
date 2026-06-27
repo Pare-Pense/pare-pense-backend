@@ -82,7 +82,7 @@ export class DespesaController {
         const periodoValidado = periodoSchema.parse(periodo);
 
         const despesas =
-        await despesaService.recuperarDespesasPorPeriodo(
+        await despesaService.recuperarDespesasPorPeriodoECategoria(
             idUsuarioVerificado,
             periodoValidado,
             categoria as Categoria
