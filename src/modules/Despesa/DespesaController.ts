@@ -81,11 +81,13 @@ export class DespesaController {
 
         const periodoValidado = periodoSchema.parse(periodo);
 
+        const categoriaEnum = validaCategoria.parse(categoria);
+
         const despesas =
         await despesaService.recuperarDespesasPorPeriodoECategoria(
             idUsuarioVerificado,
             periodoValidado,
-            categoria as Categoria
+            categoriaEnum
         );
 
         return res.status(200).json(despesas);
