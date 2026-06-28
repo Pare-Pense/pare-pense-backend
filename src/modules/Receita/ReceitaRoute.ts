@@ -8,6 +8,13 @@ const routes: Router = Router();
 const receitaController = new ReceitaController();
 
 routes.get(
+    '/:idUsuario/:periodo',
+    validarAuth('idUsuario'),
+    (req: Request, res: Response) =>
+        receitaController.recuperarReceitasPorPeriodo(req, res),
+);
+
+routes.get(
     '/:idUsuario/:idReceita',
     validarAuth('idUsuario'),
     (req: Request, res: Response) =>

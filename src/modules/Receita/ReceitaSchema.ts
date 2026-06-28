@@ -15,3 +15,7 @@ export const atualizarReceitaSchema = criarReceitaSchema
 
 export type ReceitaSchema = z.infer<typeof criarReceitaSchema>;
 export type AtualizaReceitaSchema = z.infer<typeof atualizarReceitaSchema>;
+
+export const periodoSchema = z.enum(['semanal', 'mensal', 'anual'], {
+    error: () => ({ message: 'Período inválido' }),
+});

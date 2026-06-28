@@ -1,5 +1,6 @@
 import { idSchema } from '../Schema.js';
 import { usuarioService } from '../Usuario/UsuarioService.js';
+import { periodoSchema } from './ReceitaSchema.js';
 import { receitaService } from './ReceitaService.js';
 import type { Request, Response } from 'express';
 
@@ -46,6 +47,39 @@ export class ReceitaController {
                 await receitaService.recuperarReceitasAll(idUsuarioVerificado);
 
             res.status(200).json(receitas);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                if (error.message === 'Usuário não encontrado') {
+                    res.status(404).json({ erro: error.message });
+                    return;
+                }
+
+                res.status(400).json({ erro: error.message });
+                return;
+            }
+
+            res.status(500).json({
+                erro: 'Ocorreu um erro desconhecido no servidor',
+            });
+        }
+    }
+
+    async recuperarReceitasPorPeriodo(req: Request, res: Response) {
+        try {
+            const { idUsuario, periodo } = req.params;
+
+            const idUsuarioVerificado = idSchema.parse(idUsuario);
+
+            await this.usuarioExiste(idUsuarioVerificado);
+
+            const periodoValidado = periodoSchema.parse(periodo);
+
+            const receitas = await receitaService.recuperarReceitasPorPeriodo(
+                idUsuarioVerificado,
+                periodoValidado,
+            );
+
+            return res.status(200).json(receitas);
         } catch (error: unknown) {
             if (error instanceof Error) {
                 if (error.message === 'Usuário não encontrado') {

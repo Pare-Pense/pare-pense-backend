@@ -13,6 +13,14 @@ routes.get(
     (req: Request, res: Response) =>
         despesaController.recuperarSomaGastosPorCategoria(req, res),
 );
+
+routes.get(
+    '/:idUsuario/:periodo',
+    validarAuth('idUsuario'),
+    (req: Request, res: Response) =>
+        despesaController.recuperarDespesasPorPeriodoECategoria(req, res),
+);
+
 routes.get(
     '/:idUsuario/:idDespesa',
     validarAuth('idUsuario'),
