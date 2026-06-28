@@ -5,7 +5,6 @@ import { receitaService } from './ReceitaService.js';
 import type { Request, Response } from 'express';
 
 export class ReceitaController {
-    
     private async usuarioExiste(id: string) {
         await usuarioService.recuperaUsuario(id);
     }
@@ -72,7 +71,7 @@ export class ReceitaController {
             const idUsuarioVerificado = idSchema.parse(idUsuario);
 
             await this.usuarioExiste(idUsuarioVerificado);
-            
+
             const periodoValidado = periodoSchema.parse(periodo);
 
             const receitas = await receitaService.recuperarReceitasPorPeriodo(
