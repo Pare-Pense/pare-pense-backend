@@ -39,7 +39,7 @@ export class DespesaService {
         idUsuario: string,
         periodo: 'semanal' | 'mensal' | 'anual',
         categoria?: Categoria,
-        ) {
+    ) {
         const dataFim = new Date();
         const dataInicio = new Date();
 
@@ -61,15 +61,15 @@ export class DespesaService {
 
         const despesas = await this.db.despesa.findMany({
             where: {
-            idUsuario,
-            data: {
-                gte: dataInicio,
-                lte: dataFim,
-            },
-            ...(categoria && { categoria }),
+                idUsuario,
+                data: {
+                    gte: dataInicio,
+                    lte: dataFim,
+                },
+                ...(categoria && { categoria }),
             },
             orderBy: {
-            data: 'asc',
+                data: 'asc',
             },
         });
 

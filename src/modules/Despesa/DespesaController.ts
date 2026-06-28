@@ -6,7 +6,6 @@ import { periodoSchema, validaCategoria } from './DespesaSchema.js';
 import type { Categoria } from '../../generated/prisma/enums.js';
 
 export class DespesaController {
-    
     private async usuarioExiste(id: string) {
         await usuarioService.recuperaUsuario(id);
     }
@@ -70,32 +69,32 @@ export class DespesaController {
         }
     }
 
-   async recuperarDespesasPorPeriodoECategoria(req: Request, res: Response) {
+    async recuperarDespesasPorPeriodoECategoria(req: Request, res: Response) {
         try {
-        const { idUsuario, periodo } = req.params;
-        const { categoria } = req.query;
+            const { idUsuario, periodo } = req.params;
+            const { categoria } = req.query;
 
-        const idUsuarioVerificado = idSchema.parse(idUsuario);
+            const idUsuarioVerificado = idSchema.parse(idUsuario);
 
-        await this.usuarioExiste(idUsuarioVerificado);
+            await this.usuarioExiste(idUsuarioVerificado);
 
-        const periodoValidado = periodoSchema.parse(periodo);
+            const periodoValidado = periodoSchema.parse(periodo);
 
-        const despesas =
-        await despesaService.recuperarDespesasPorPeriodoECategoria(
-            idUsuarioVerificado,
-            periodoValidado,
-            categoria as Categoria
-        );
+            const despesas =
+                await despesaService.recuperarDespesasPorPeriodoECategoria(
+                    idUsuarioVerificado,
+                    periodoValidado,
+                    categoria as Categoria,
+                );
 
-        return res.status(200).json(despesas);
-    } catch (error: unknown) {
-        if (error instanceof Error) {
-            return res.status(400).json({ erro: error.message });
-        }
+            return res.status(200).json(despesas);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                return res.status(400).json({ erro: error.message });
+            }
 
-        return res.status(500).json({
-            erro: 'Erro interno no servidor',
+            return res.status(500).json({
+                erro: 'Erro interno no servidor',
             });
         }
     }

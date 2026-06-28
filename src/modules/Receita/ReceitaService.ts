@@ -5,11 +5,11 @@ import type { ReceitaSchema } from './ReceitaSchema.js';
 export class ReceitaService {
     constructor(private db = prisma) {}
 
-     private formataReceita(receita: Receita) {
-            return {
-                ...receita,
-                valor: receita.valor.toNumber(),
-            };
+    private formataReceita(receita: Receita) {
+        return {
+            ...receita,
+            valor: receita.valor.toNumber(),
+        };
     }
 
     async cadastrarReceita(data: ReceitaSchema) {
@@ -25,11 +25,10 @@ export class ReceitaService {
 
     async recuperarReceitasAll(idUsuario: string) {
         const receitas = await this.db.receita.findMany({
-            where: { idUsuario}
+            where: { idUsuario },
         });
 
         return receitas.map((receita) => this.formataReceita(receita));
-
     }
 
     async recuperarReceitasPorPeriodo(

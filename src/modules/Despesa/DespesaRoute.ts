@@ -15,10 +15,10 @@ routes.get(
 );
 
 routes.get(
-  '/:idUsuario/:periodo',
-  validarAuth('idUsuario'),
-  (req: Request, res: Response) =>
-    despesaController.recuperarDespesasPorPeriodoECategoria(req, res),
+    '/:idUsuario/:periodo',
+    validarAuth('idUsuario'),
+    (req: Request, res: Response) =>
+        despesaController.recuperarDespesasPorPeriodoECategoria(req, res),
 );
 
 routes.get(
