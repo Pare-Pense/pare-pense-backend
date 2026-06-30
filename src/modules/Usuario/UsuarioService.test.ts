@@ -304,7 +304,7 @@ describe('UsuarioService - Testes de Unidade', () => {
                     email: 'teste@teste.com',
                     senha: '12345678',
                 }),
-            ).rejects.toThrow('Usuário não encontrado');
+            ).rejects.toThrow('Email ou senha inválido');
         });
 
         it('lança erro ao senha incorreta', async () => {
@@ -324,7 +324,7 @@ describe('UsuarioService - Testes de Unidade', () => {
                     email: 'teste@teste.com',
                     senha: 'senha_errada',
                 }),
-            ).rejects.toThrow('Senha inválida');
+            ).rejects.toThrow('Email ou senha inválido');
         });
     });
 });
