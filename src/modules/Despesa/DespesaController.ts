@@ -79,7 +79,7 @@ export class DespesaController {
 
             const periodoValidado = periodoSchema.parse(periodo);
 
-        const categoriaEnum = validaCategoria.parse(categoria);
+        const categoriaEnum = categoria? validaCategoria.parse(categoria): undefined;
 
         const despesas =
         await despesaService.recuperarDespesasPorPeriodoECategoria(
