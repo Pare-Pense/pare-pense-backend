@@ -8,10 +8,10 @@ const routes: Router = Router();
 const receitaController = new ReceitaController();
 
 routes.get(
-    '/:idUsuario/:periodo',
+    '/:idUsuario',
     validarAuth('idUsuario'),
     (req: Request, res: Response) =>
-        receitaController.recuperarReceitasPorPeriodo(req, res),
+        receitaController.recuperarReceitasAll(req, res),
 );
 
 routes.get(
@@ -19,13 +19,6 @@ routes.get(
     validarAuth('idUsuario'),
     (req: Request, res: Response) =>
         receitaController.recuperarReceita(req, res),
-);
-
-routes.get(
-    '/:idUsuario',
-    validarAuth('idUsuario'),
-    (req: Request, res: Response) =>
-        receitaController.recuperarReceitasAll(req, res),
 );
 
 routes.post(

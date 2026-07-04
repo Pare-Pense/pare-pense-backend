@@ -18,26 +18,12 @@ export class DespesaService {
             data,
         });
 
-        return {
-            ...despesa,
-            valor: despesa.valor.toNumber(),
-        };
+        return this.formataDespesa(despesa);
     }
 
-    async recuperarDespesasAll(idUsuario: string, categoria?: Categoria) {
-        const despesas = await this.db.despesa.findMany({
-            where: {
-                idUsuario: idUsuario,
-                ...(categoria && { categoria: categoria }),
-            },
-        });
-
-        return despesas.map((despesa) => this.formataDespesa(despesa));
-    }
-
-    async recuperarDespesasPorPeriodoECategoria(
+    async recuperarDespesasAll(
         idUsuario: string,
-        periodo: 'semanal' | 'mensal' | 'anual',
+        periodo?: 'semanal' | 'mensal' | 'anual',
         categoria?: Categoria,
     ) {
         const dataFim = new Date();
@@ -62,10 +48,12 @@ export class DespesaService {
         const despesas = await this.db.despesa.findMany({
             where: {
                 idUsuario,
-                data: {
-                    gte: dataInicio,
-                    lte: dataFim,
-                },
+                ...(periodo && {
+                    data: {
+                        gte: dataInicio,
+                        lte: dataFim,
+                    },
+                }),
                 ...(categoria && { categoria }),
             },
             orderBy: {
@@ -89,10 +77,7 @@ export class DespesaService {
             throw new Error('Despesa não pertence a esse usuário');
         }
 
-        return {
-            ...despesa,
-            valor: despesa.valor.toNumber(),
-        };
+        return this.formataDespesa(despesa);
     }
 
     async recuperarSomaGastosPorCategoria(
@@ -144,10 +129,7 @@ export class DespesaService {
             data,
         });
 
-        return {
-            ...despesa,
-            valor: despesa.valor.toNumber(),
-        };
+        return this.formataDespesa(despesa);
     }
 
     async deletarDespesa(idUsuario: string, idDespesa: string) {
