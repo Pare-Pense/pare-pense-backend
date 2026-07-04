@@ -23,17 +23,9 @@ export class ReceitaService {
         };
     }
 
-    async recuperarReceitasAll(idUsuario: string) {
-        const receitas = await this.db.receita.findMany({
-            where: { idUsuario },
-        });
-
-        return receitas.map((receita) => this.formataReceita(receita));
-    }
-
-    async recuperarReceitasPorPeriodo(
+    async recuperarReceitasAll(
         idUsuario: string,
-        periodo: 'semanal' | 'mensal' | 'anual',
+        periodo?: 'semanal' | 'mensal' | 'anual',
     ) {
         const dataFim = new Date();
         const dataInicio = new Date();
@@ -56,10 +48,12 @@ export class ReceitaService {
         const receitas = await this.db.receita.findMany({
             where: {
                 idUsuario,
-                data: {
-                    gte: dataInicio,
-                    lte: dataFim,
-                },
+                ...(periodo && {
+                    data: {
+                        gte: dataInicio,
+                        lte: dataFim,
+                    },
+                }),
             },
             orderBy: {
                 data: 'asc',
