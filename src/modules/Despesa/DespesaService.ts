@@ -1,0 +1,144 @@
+import type { Categoria } from '../../generated/prisma/enums.js';
+import type { Despesa } from '../../generated/prisma/client.js';
+import { prisma } from '../../lib/prisma.js';
+import type { DespesaSchema } from './DespesaSchema.js';
+
+export class DespesaService {
+    constructor(private db = prisma) {}
+
+    private formataDespesa(despesa: Despesa) {
+        return {
+            ...despesa,
+            valor: despesa.valor.toNumber(),
+        };
+    }
+
+    async cadastrarDespesa(data: DespesaSchema) {
+        const despesa = await this.db.despesa.create({
+            data,
+        });
+
+        return this.formataDespesa(despesa);
+    }
+
+    async recuperarDespesasAll(
+        idUsuario: string,
+        periodo?: 'semanal' | 'mensal' | 'anual',
+        categoria?: Categoria,
+    ) {
+        const dataFim = new Date();
+        const dataInicio = new Date();
+
+        dataInicio.setHours(0, 0, 0, 0);
+        dataFim.setHours(23, 59, 59, 999);
+
+        if (periodo === 'semanal') {
+            const diaSemana = dataInicio.getDay();
+            dataInicio.setDate(dataInicio.getDate() - diaSemana);
+            dataFim.setDate(dataFim.getDate() + (6 - diaSemana));
+        } else if (periodo === 'mensal') {
+            dataInicio.setDate(1);
+            dataFim.setMonth(dataFim.getMonth() + 1, 0);
+        } else if (periodo === 'anual') {
+            dataInicio.setMonth(0, 1);
+            dataFim.setMonth(0, 1);
+            dataFim.setFullYear(dataFim.getFullYear() + 1, 11, 31);
+        }
+
+        const despesas = await this.db.despesa.findMany({
+            where: {
+                idUsuario,
+                ...(periodo && {
+                    data: {
+                        gte: dataInicio,
+                        lte: dataFim,
+                    },
+                }),
+                ...(categoria && { categoria }),
+            },
+            orderBy: {
+                data: 'asc',
+            },
+        });
+
+        return despesas.map(this.formataDespesa);
+    }
+
+    async recuperarDespesa(idUsuario: string, idDespesa: string) {
+        const despesa = await this.db.despesa.findUnique({
+            where: { id: idDespesa },
+        });
+
+        if (!despesa) {
+            throw new Error('Despesa não existe');
+        }
+
+        if (despesa.idUsuario !== idUsuario) {
+            throw new Error('Despesa não pertence a esse usuário');
+        }
+
+        return this.formataDespesa(despesa);
+    }
+
+    async recuperarSomaGastosPorCategoria(
+        idUsuario: string,
+        periodo: 'semanal' | 'mensal' | 'anual',
+    ) {
+        const dataFim = new Date();
+        const dataInicio = new Date();
+
+        dataInicio.setHours(0, 0, 0, 0);
+        dataFim.setHours(23, 59, 59, 999);
+
+        if (periodo === 'semanal') {
+            const diaSemana = dataInicio.getDay();
+            dataInicio.setDate(dataInicio.getDate() - diaSemana);
+            dataFim.setDate(dataFim.getDate() + (6 - diaSemana));
+        } else if (periodo === 'mensal') {
+            dataInicio.setDate(1);
+            dataFim.setMonth(dataFim.getMonth() + 1, 0);
+        } else if (periodo === 'anual') {
+            dataInicio.setMonth(0, 1);
+            dataFim.setMonth(0, 1);
+            dataFim.setFullYear(dataFim.getFullYear() + 1, 11, 31);
+        }
+
+        const somaGastosPorCategoria = await this.db.despesa.groupBy({
+            where: { idUsuario, data: { gte: dataInicio, lte: dataFim } },
+            by: ['categoria'],
+            _sum: { valor: true },
+        });
+
+        const somaGastosFormatado = somaGastosPorCategoria.map((gastos) => ({
+            categoria: gastos.categoria,
+            valor: gastos._sum.valor?.toNumber(),
+        }));
+
+        return somaGastosFormatado;
+    }
+
+    async atualizaDespesa(
+        idUsuario: string,
+        idDespesa: string,
+        data: DespesaSchema,
+    ) {
+        await this.recuperarDespesa(idUsuario, idDespesa);
+
+        const despesa = await this.db.despesa.update({
+            where: { id: idDespesa },
+            data,
+        });
+
+        return this.formataDespesa(despesa);
+    }
+
+    async deletarDespesa(idUsuario: string, idDespesa: string) {
+        await this.recuperarDespesa(idUsuario, idDespesa);
+
+        await this.db.despesa.delete({ where: { id: idDespesa } });
+
+        return { message: 'Despesa deletada com sucesso' };
+    }
+}
+
+export const despesaService = new DespesaService();

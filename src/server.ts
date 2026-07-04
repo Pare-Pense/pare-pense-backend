@@ -1,15 +1,18 @@
-import express, { type Request, type Response } from 'express';
+import express from 'express';
+import { routes as usuarioRoutes } from './modules/Usuario/UsuarioRoute.js';
+import { despesaRoutes } from './modules/Despesa/DespesaRoute.js';
+import { receitaRoutes } from './modules/Receita/ReceitaRoute.js';
+import cors from 'cors';
 
 const app = express();
 const PORT = 3000;
 
-// Permite que o servidor entenda requisições em JSON
 app.use(express.json());
+app.use(cors());
 
-// Rota de teste
-app.get('/ping', (req: Request, res: Response) => {
-    res.json({ message: 'pong! O servidor TypeScript está rodando!' });
-});
+app.use('/usuarios', usuarioRoutes);
+app.use('/despesas', despesaRoutes);
+app.use('/receitas', receitaRoutes);
 
 // Inicia o servidor
 app.listen(PORT, () => {

@@ -1,0 +1,49 @@
+generator client {
+    provider = "prisma-client"
+    output   = "../src/generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+model Usuario {
+    id String @id @default(uuid())
+    nome String
+    dataNascimento DateTime @db.Date
+    email String @unique
+    senha String
+    rendaMensal Decimal @db.Decimal(10, 2)
+    limiteMensal Decimal @db.Decimal(10, 2)
+    createdAt DateTime @default(now())
+    despesas Despesa[]
+    receitas Receita[]
+}
+
+model Despesa {
+    id String @id @default(uuid())
+    nome String
+    categoria Categoria
+    data DateTime
+    valor Decimal @db.Decimal(10, 2)
+    idUsuario String
+    usuario Usuario @relation(fields: [idUsuario], references: [id], onDelete: Cascade)
+}
+
+model Receita {
+    id String @id @default(uuid())
+    nome String
+    valor Decimal @db.Decimal(10, 2)
+    data DateTime
+    idUsuario String
+    usuario Usuario @relation(fields: [idUsuario], references: [id], onDelete: Cascade)
+}
+
+enum Categoria {
+    ALIMENTACAO
+    LAZER
+    TRANSPORTE
+    COMPRAS
+    CONTAS
+    OUTROS
+}
