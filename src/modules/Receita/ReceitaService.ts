@@ -17,10 +17,7 @@ export class ReceitaService {
             data,
         });
 
-        return {
-            ...receita,
-            valor: receita.valor.toNumber(),
-        };
+        return this.formataReceita(receita);
     }
 
     async recuperarReceitasAll(
@@ -76,10 +73,7 @@ export class ReceitaService {
             throw new Error('Receita não pertence a esse usuário');
         }
 
-        return {
-            ...receita,
-            valor: receita.valor.toNumber(),
-        };
+        return this.formataReceita(receita);
     }
 
     async atualizaReceita(
@@ -94,10 +88,7 @@ export class ReceitaService {
             data,
         });
 
-        return {
-            ...receita,
-            valor: receita.valor.toNumber(),
-        };
+        return this.formataReceita(receita);
     }
 
     async deletarReceita(idUsuario: string, idReceita: string) {

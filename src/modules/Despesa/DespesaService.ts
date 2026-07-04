@@ -18,10 +18,7 @@ export class DespesaService {
             data,
         });
 
-        return {
-            ...despesa,
-            valor: despesa.valor.toNumber(),
-        };
+        return this.formataDespesa(despesa);
     }
 
     async recuperarDespesasAll(
@@ -80,10 +77,7 @@ export class DespesaService {
             throw new Error('Despesa não pertence a esse usuário');
         }
 
-        return {
-            ...despesa,
-            valor: despesa.valor.toNumber(),
-        };
+        return this.formataDespesa(despesa);
     }
 
     async recuperarSomaGastosPorCategoria(
@@ -135,10 +129,7 @@ export class DespesaService {
             data,
         });
 
-        return {
-            ...despesa,
-            valor: despesa.valor.toNumber(),
-        };
+        return this.formataDespesa(despesa);
     }
 
     async deletarDespesa(idUsuario: string, idDespesa: string) {
