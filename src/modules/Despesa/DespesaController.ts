@@ -38,19 +38,23 @@ export class DespesaController {
     async recuperarDespesasAll(req: Request, res: Response) {
         try {
             const { idUsuario } = req.params;
+            const { periodo, categoria } = req.query;
 
             const idUsuarioVerificado = idSchema.parse(idUsuario);
 
             await this.usuarioExiste(idUsuarioVerificado);
 
-            const categoriaEnum = validaCategoria.parse(req.query.categoria);
+            const periodoValidado = periodoSchema.optional().parse(periodo);
+
+            const categoriaEnum = validaCategoria.parse(categoria);
 
             const despesas = await despesaService.recuperarDespesasAll(
                 idUsuarioVerificado,
+                periodoValidado,
                 categoriaEnum,
             );
 
-            res.status(200).json(despesas);
+            return res.status(200).json(despesas);
         } catch (error: unknown) {
             if (error instanceof Error) {
                 if (error.message === 'Usuário não encontrado') {
@@ -58,39 +62,6 @@ export class DespesaController {
                     return;
                 }
 
-                res.status(400).json({ erro: error.message });
-                return;
-            }
-
-            res.status(500).json({
-                erro: 'Ocorreu um erro desconhecido no servidor',
-            });
-        }
-    }
-
-    async recuperarDespesasPorPeriodoECategoria(req: Request, res: Response) {
-        try {
-            const { idUsuario, periodo } = req.params;
-            const { categoria } = req.query;
-
-            const idUsuarioVerificado = idSchema.parse(idUsuario);
-
-            await this.usuarioExiste(idUsuarioVerificado);
-
-            const periodoValidado = periodoSchema.parse(periodo);
-
-        const categoriaEnum = validaCategoria.parse(categoria);
-
-        const despesas =
-        await despesaService.recuperarDespesasPorPeriodoECategoria(
-            idUsuarioVerificado,
-            periodoValidado,
-            categoriaEnum
-        );
-
-            return res.status(200).json(despesas);
-        } catch (error: unknown) {
-            if (error instanceof Error) {
                 return res.status(400).json({ erro: error.message });
             }
 

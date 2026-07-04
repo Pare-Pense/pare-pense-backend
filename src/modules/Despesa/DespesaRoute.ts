@@ -15,10 +15,10 @@ routes.get(
 );
 
 routes.get(
-    '/:idUsuario/:periodo',
+    '/:idUsuario',
     validarAuth('idUsuario'),
     (req: Request, res: Response) =>
-        despesaController.recuperarDespesasPorPeriodoECategoria(req, res),
+        despesaController.recuperarDespesasAll(req, res),
 );
 
 routes.get(
@@ -26,12 +26,6 @@ routes.get(
     validarAuth('idUsuario'),
     (req: Request, res: Response) =>
         despesaController.recuperarDespesa(req, res),
-);
-routes.get(
-    '/:idUsuario',
-    validarAuth('idUsuario'),
-    (req: Request, res: Response) =>
-        despesaController.recuperarDespesasAll(req, res),
 );
 routes.post(
     '/cadastrarDespesa',
