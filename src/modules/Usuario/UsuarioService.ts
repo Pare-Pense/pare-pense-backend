@@ -146,7 +146,9 @@ export class UsuarioService {
         const dataInicio = new Date();
 
         dataInicio.setDate(1);
+        dataInicio.setHours(0, 0, 0, 0);
         dataFim.setMonth(dataFim.getMonth() + 1, 0);
+        dataFim.setHours(23, 59, 59, 999);
 
         const [usuario, somaDespesas, somaReceitas] = await Promise.all([
             this.db.usuario.findUnique({
