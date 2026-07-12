@@ -4,11 +4,6 @@ import { prisma } from '../../lib/prisma.js';
 export class NotificacaoService {
     constructor(private db = prisma) {}
 
-    // Ajustar 
-    private formataNotificacao(notificacao: Notificacao) {
-        return notificacao;
-    }
-
     async cadastrarNotificacao(data: {
         titulo: string;
         mensagem: string;
@@ -18,7 +13,7 @@ export class NotificacaoService {
             data,
         });
 
-        return this.formataNotificacao(notificacao);
+        return notificacao;
     }
 
     async recuperarNotificacoes(idUsuario: string) {
@@ -39,7 +34,7 @@ export class NotificacaoService {
         });
 
         return {
-            notificacoes: notificacoes.map((notificacao) => this.formataNotificacao(notificacao)),
+            notificacoes,
             naoLidas,
         };
     }
@@ -59,7 +54,7 @@ export class NotificacaoService {
             throw new Error('Notificação não pertence a esse usuário');
         }
 
-        return this.formataNotificacao(notificacao);
+        return notificacao;
     }
 
     async marcarComoLida(idUsuario: string, idNotificacao: string) {
@@ -74,7 +69,7 @@ export class NotificacaoService {
             },
         });
 
-        return this.formataNotificacao(notificacao);
+        return notificacao;
     }
 
     async marcarTodasComoLidas(idUsuario: string) {
