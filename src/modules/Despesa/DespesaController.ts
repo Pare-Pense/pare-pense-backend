@@ -20,10 +20,15 @@ export class DespesaController {
 
             const usuario = await usuarioService.recuperaUsuario(idUsuario);
 
-            analiseGastosService.processarAnalisePosGasto(idUsuario, 
-                usuario.limiteMensal,
-            { id: despesa.id, valor: despesa.valor, categoria: despesa.categoria })
-            .catch(err => console.error("Falha silenciosa na analise:", err));
+            analiseGastosService
+                .processarAnalisePosGasto(idUsuario, usuario.limiteMensal, {
+                    id: despesa.id,
+                    valor: despesa.valor,
+                    categoria: despesa.categoria,
+                })
+                .catch((err) =>
+                    console.error('Falha silenciosa na analise:', err),
+                );
 
             res.status(201).json(despesa);
         } catch (error: unknown) {

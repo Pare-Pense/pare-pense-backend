@@ -18,7 +18,7 @@ app.use(
 app.use('/usuarios', usuarioRoutes);
 app.use('/despesas', despesaRoutes);
 app.use('/receitas', receitaRoutes);
-app.use('/notificacoes', notificacaoRoutes)
+app.use('/notificacoes', notificacaoRoutes);
 
 // Inicia o servidor
 app.listen(PORT, () => {

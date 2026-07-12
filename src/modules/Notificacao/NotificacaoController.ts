@@ -16,9 +16,10 @@ export class NotificacaoController {
 
             await this.usuarioExiste(idUsuarioVerificado);
 
-            const resultado = await notificacaoService.recuperarNotificacoes(
-                idUsuarioVerificado,
-            );
+            const resultado =
+                await notificacaoService.recuperarNotificacoes(
+                    idUsuarioVerificado,
+                );
 
             return res.status(200).json(resultado);
         } catch (error: unknown) {
