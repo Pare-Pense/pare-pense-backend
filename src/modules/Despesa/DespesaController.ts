@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { despesaService } from './DespesaService.js';
 import { usuarioService } from '../Usuario/UsuarioService.js';
+import { analiseGastosService } from '../AnaliseGastos/AnaliseGastosService.js';
 import { idSchema } from '../Schema.js';
 import { periodoSchema, validaCategoria } from './DespesaSchema.js';
 
@@ -16,6 +17,13 @@ export class DespesaController {
             await this.usuarioExiste(idUsuario);
 
             const despesa = await despesaService.cadastrarDespesa(req.body);
+
+            const usuario = await usuarioService.recuperaUsuario(idUsuario);
+
+            analiseGastosService.processarAnalisePosGasto(idUsuario, 
+                usuario.limiteMensal,
+            { id: despesa.id, valor: despesa.valor, categoria: despesa.categoria })
+            .catch(err => console.error("Falha silenciosa na analise:", err));
 
             res.status(201).json(despesa);
         } catch (error: unknown) {
