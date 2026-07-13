@@ -18,6 +18,7 @@ model Usuario {
     createdAt DateTime @default(now())
     despesas Despesa[]
     receitas Receita[]
+    notificacoes Notificacao[]
 }
 
 model Despesa {
@@ -46,4 +47,15 @@ enum Categoria {
     COMPRAS
     CONTAS
     OUTROS
+}
+
+model Notificacao {
+    id String @id @default(uuid())
+    titulo String
+    mensagem String
+    idUsuario String
+    createdAt DateTime @default(now())
+    lida       Boolean  @default(false)
+    usuario Usuario @relation(fields: [idUsuario], references: [id], onDelete: Cascade)
+    @@index([idUsuario])
 }
