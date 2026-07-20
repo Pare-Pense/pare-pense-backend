@@ -27,7 +27,7 @@ export class AnaliseGastosService {
                 .filter((d) => d.id !== novaDespesa.id)
                 .map((d) => d.valor);
 
-            if (history.length > 0) {
+            if (history.length > 10) {
                 const zScorePayload = {
                     history: history,
                     new_expense: novaDespesa.valor,
