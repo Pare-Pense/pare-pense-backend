@@ -82,16 +82,40 @@ export class AnaliseGastosService {
                 gastosPorDia.set(dia, gastoAcumulado);
             }
 
-            if (gastosPorDia.size < 8) {
+            //Manda notificação sem rodar modelo caso tenha apenas 1 dia de gastos e já estiver próximo de atingir o limite
+            if (gastosPorDia.size < 2) {
+                const porcentagemGasta = (gastoAcumulado / limiteMensal) * 100;
+
+                if (porcentagemGasta >= 80) {
+                    const doisDiasAtras = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
+
+                    const notificacaoRecente = await this.db.notificacao.findFirst({
+                        where: {
+                            idUsuario,
+                            titulo: 'Alerta de Orçamento',
+                            createdAt: { gte: doisDiasAtras },
+                        },
+                    });
+
+                    if (!notificacaoRecente) {
+                        await notificacaoService.cadastrarNotificacao({
+                            idUsuario: idUsuario,
+                            titulo: 'Alerta de Orçamento',
+                            mensagem: `Atenção! Em apenas 1 dia de registros você já comprometeu ${porcentagemGasta.toFixed(0)}% (R$ ${gastoAcumulado.toFixed(2)}) do seu orçamento mensal de R$ ${limiteMensal.toFixed(2)}.`,
+                        });
+                    }
+                }
                 return;
             }
+            
+            const diasOrdenados = Array.from(gastosPorDia.keys()).sort((a, b) => a - b);
 
             const train_x: number[][] = [];
             const train_y: number[] = [];
 
-            gastosPorDia.forEach((valorAcumulado, dia) => {
+            diasOrdenados.forEach((dia) => {
                 train_x.push([dia]);
-                train_y.push(valorAcumulado);
+                train_y.push(gastosPorDia.get(dia)!);
             });
 
             const payload = {
@@ -119,13 +143,15 @@ export class AnaliseGastosService {
                 diaDoEstouro <= diaFinal &&
                 diaDoEstouro > dataAtual.getDate()
             ) {
+                const doisDiasAtras = new Date(Date.now() - 2 * 24 * 60 * 60 * 1000);
+
                 const notificacaoRecente = await this.db.notificacao.findFirst({
                     where: {
                         idUsuario,
                         titulo: 'Alerta de Orçamento',
                         createdAt: {
                             gte: new Date(
-                                dataAtual.setDate(dataAtual.getDate() - 2),
+                                doisDiasAtras,
                             ),
                         },
                     },
