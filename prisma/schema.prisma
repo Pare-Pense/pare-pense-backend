@@ -19,12 +19,14 @@ model Usuario {
     despesas Despesa[]
     receitas Receita[]
     notificacoes Notificacao[]
+    categorias Categoria[]
 }
 
 model Despesa {
     id String @id @default(uuid())
     nome String
-    categoria Categoria
+    idCategoria String
+    categoria Categoria @relation(fields: [idCategoria], references: [id])
     data DateTime
     valor Decimal @db.Decimal(10, 2)
     idUsuario String
@@ -40,13 +42,14 @@ model Receita {
     usuario Usuario @relation(fields: [idUsuario], references: [id], onDelete: Cascade)
 }
 
-enum Categoria {
-    ALIMENTACAO
-    LAZER
-    TRANSPORTE
-    COMPRAS
-    CONTAS
-    OUTROS
+model Categoria {
+    id String @id @default(uuid())
+    nome String
+    idUsuario String?
+    usuario Usuario? @relation(fields: [idUsuario], references: [id], onDelete: Cascade)
+    despesas Despesa[]
+    @@unique([idUsuario, nome])
+    @@index([idUsuario])
 }
 
 model Notificacao {
