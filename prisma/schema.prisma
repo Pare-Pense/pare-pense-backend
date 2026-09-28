@@ -20,6 +20,7 @@ model Usuario {
     receitas Receita[]
     notificacoes Notificacao[]
     categorias Categoria[]
+    despesasRecorrentes DespesaRecorrente[]
 }
 
 model Despesa {
@@ -31,6 +32,9 @@ model Despesa {
     valor Decimal @db.Decimal(10, 2)
     idUsuario String
     usuario Usuario @relation(fields: [idUsuario], references: [id], onDelete: Cascade)
+    idDespesaRecorrente String?
+    despesaRecorrente DespesaRecorrente? @relation(fields: [idDespesaRecorrente], references: [id], onDelete: SetNull)
+    @@unique([idDespesaRecorrente, data])
 }
 
 model Receita {
@@ -48,7 +52,34 @@ model Categoria {
     idUsuario String?
     usuario Usuario? @relation(fields: [idUsuario], references: [id], onDelete: Cascade)
     despesas Despesa[]
+    despesasRecorrentes DespesaRecorrente[]
     @@unique([idUsuario, nome])
+    @@index([idUsuario])
+}
+
+enum FrequenciaRecorrencia {
+    SEMANAL
+    MENSAL
+    ANUAL
+}
+
+model DespesaRecorrente {
+    id String @id @default(uuid())
+    nome String
+    idCategoria String
+    categoria Categoria @relation(fields: [idCategoria], references: [id])
+    valor Decimal @db.Decimal(10, 2)
+    frequencia FrequenciaRecorrencia
+    diaSemana Int?
+    diaMes Int?
+    mes Int?
+    dataInicio DateTime @db.Date
+    dataFim DateTime? @db.Date
+    ativa Boolean @default(true)
+    idUsuario String
+    usuario Usuario @relation(fields: [idUsuario], references: [id], onDelete: Cascade)
+    despesas Despesa[]
+    createdAt DateTime @default(now())
     @@index([idUsuario])
 }
 
