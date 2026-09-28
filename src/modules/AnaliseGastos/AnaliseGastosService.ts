@@ -2,7 +2,6 @@ import { notificacaoService } from '../Notificacao/NotificacaoService.js';
 import { despesaService } from '../Despesa/DespesaService.js';
 import { prisma } from '../../lib/prisma.js';
 import 'dotenv/config';
-import type { Categoria } from '../../generated/prisma/enums.js';
 
 export class AnaliseGastosService {
     constructor(private db = prisma) {}
@@ -10,7 +9,12 @@ export class AnaliseGastosService {
     async processarAnalisePosGasto(
         idUsuario: string,
         limiteMensal: number,
-        novaDespesa: { id: string; valor: number; categoria: Categoria },
+        novaDespesa: {
+            id: string;
+            valor: number;
+            idCategoria: string;
+            categoria: string;
+        },
     ) {
         const dataAtual = new Date();
         const FASTAPI_URL =
@@ -20,7 +24,7 @@ export class AnaliseGastosService {
                 await despesaService.recuperarDespesasAll(
                     idUsuario,
                     undefined,
-                    novaDespesa.categoria,
+                    novaDespesa.idCategoria,
                 );
 
             const history = despesasDaCategoria
