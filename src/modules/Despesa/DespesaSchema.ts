@@ -1,14 +1,8 @@
 import { z } from 'zod';
-import { Categoria } from '../../generated/prisma/enums.js';
 
 export const criarDespesaSchema = z.object({
     nome: z.string().min(3, 'O nome precisa ter no mínimo 3 letras'),
-    categoria: z.enum(Categoria, {
-        error: () => ({
-            message:
-                'Categoria inválida. Apenas: ALIMENTACAO, LAZER, TRANSPORTE, COMPRAS, CONTAS ou OUTROS',
-        }),
-    }),
+    idCategoria: z.uuid('O ID da categoria está em um formato inválido'),
     data: z.coerce.date({
         error: () => ({ message: 'Data inválida' }),
     }),
@@ -21,12 +15,7 @@ export const atualizarDespesaSchema = criarDespesaSchema
     .partial();
 
 export const validaCategoria = z
-    .enum(Categoria, {
-        error: () => ({
-            message:
-                'Categoria inválida. Apenas: ALIMENTACAO, LAZER, TRANSPORTE, COMPRAS, CONTAS ou OUTROS',
-        }),
-    })
+    .uuid('O ID da categoria está em um formato inválido')
     .optional();
 
 export const periodoSchema = z.enum(['semanal', 'mensal', 'anual'], {

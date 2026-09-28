@@ -1,21 +1,35 @@
-import type { Categoria } from '../../generated/prisma/enums.js';
-import type { Despesa } from '../../generated/prisma/client.js';
+import type { Prisma } from '../../generated/prisma/client.js';
 import { prisma } from '../../lib/prisma.js';
+import { CategoriaService } from '../Categoria/CategoriaService.js';
 import type { DespesaSchema } from './DespesaSchema.js';
 
-export class DespesaService {
-    constructor(private db = prisma) {}
+type DespesaComCategoria = Prisma.DespesaGetPayload<{
+    include: { categoria: true };
+}>;
 
-    private formataDespesa(despesa: Despesa) {
+export class DespesaService {
+    constructor(
+        private db = prisma,
+        private categoriaService = new CategoriaService(db),
+    ) {}
+
+    private formataDespesa(despesa: DespesaComCategoria) {
         return {
             ...despesa,
             valor: despesa.valor.toNumber(),
+            categoria: despesa.categoria.nome,
         };
     }
 
     async cadastrarDespesa(data: DespesaSchema) {
+        await this.categoriaService.recuperarCategoriaAcessivel(
+            data.idUsuario,
+            data.idCategoria,
+        );
+
         const despesa = await this.db.despesa.create({
             data,
+            include: { categoria: true },
         });
 
         return this.formataDespesa(despesa);
@@ -24,7 +38,7 @@ export class DespesaService {
     async recuperarDespesasAll(
         idUsuario: string,
         periodo?: 'semanal' | 'mensal' | 'anual',
-        categoria?: Categoria,
+        idCategoria?: string,
     ) {
         const dataFim = new Date();
         const dataInicio = new Date();
@@ -54,19 +68,21 @@ export class DespesaService {
                         lte: dataFim,
                     },
                 }),
-                ...(categoria && { categoria }),
+                ...(idCategoria && { idCategoria }),
             },
+            include: { categoria: true },
             orderBy: {
                 data: 'asc',
             },
         });
 
-        return despesas.map(this.formataDespesa);
+        return despesas.map((despesa) => this.formataDespesa(despesa));
     }
 
     async recuperarDespesa(idUsuario: string, idDespesa: string) {
         const despesa = await this.db.despesa.findUnique({
             where: { id: idDespesa },
+            include: { categoria: true },
         });
 
         if (!despesa) {
@@ -105,12 +121,21 @@ export class DespesaService {
 
         const somaGastosPorCategoria = await this.db.despesa.groupBy({
             where: { idUsuario, data: { gte: dataInicio, lte: dataFim } },
-            by: ['categoria'],
+            by: ['idCategoria'],
             _sum: { valor: true },
         });
 
+        const categorias = await this.db.categoria.findMany({
+            where: {
+                id: { in: somaGastosPorCategoria.map((g) => g.idCategoria) },
+            },
+        });
+
+        const nomePorCategoria = new Map(categorias.map((c) => [c.id, c.nome]));
+
         const somaGastosFormatado = somaGastosPorCategoria.map((gastos) => ({
-            categoria: gastos.categoria,
+            idCategoria: gastos.idCategoria,
+            categoria: nomePorCategoria.get(gastos.idCategoria),
             valor: gastos._sum.valor?.toNumber(),
         }));
 
@@ -124,9 +149,17 @@ export class DespesaService {
     ) {
         await this.recuperarDespesa(idUsuario, idDespesa);
 
+        if (data.idCategoria) {
+            await this.categoriaService.recuperarCategoriaAcessivel(
+                idUsuario,
+                data.idCategoria,
+            );
+        }
+
         const despesa = await this.db.despesa.update({
             where: { id: idDespesa },
             data,
+            include: { categoria: true },
         });
 
         return this.formataDespesa(despesa);

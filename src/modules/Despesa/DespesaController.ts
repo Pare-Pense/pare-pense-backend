@@ -24,6 +24,7 @@ export class DespesaController {
                 .processarAnalisePosGasto(idUsuario, usuario.limiteMensal, {
                     id: despesa.id,
                     valor: despesa.valor,
+                    idCategoria: despesa.idCategoria,
                     categoria: despesa.categoria,
                 })
                 .catch((err) =>
@@ -51,7 +52,7 @@ export class DespesaController {
     async recuperarDespesasAll(req: Request, res: Response) {
         try {
             const { idUsuario } = req.params;
-            const { periodo, categoria } = req.query;
+            const { periodo, idCategoria } = req.query;
 
             const idUsuarioVerificado = idSchema.parse(idUsuario);
 
@@ -59,12 +60,12 @@ export class DespesaController {
 
             const periodoValidado = periodoSchema.optional().parse(periodo);
 
-            const categoriaEnum = validaCategoria.parse(categoria);
+            const idCategoriaVerificado = validaCategoria.parse(idCategoria);
 
             const despesas = await despesaService.recuperarDespesasAll(
                 idUsuarioVerificado,
                 periodoValidado,
-                categoriaEnum,
+                idCategoriaVerificado,
             );
 
             return res.status(200).json(despesas);
