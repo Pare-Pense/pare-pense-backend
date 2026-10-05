@@ -2,12 +2,22 @@ import type { Request, Response } from 'express';
 import { despesaService } from './DespesaService.js';
 import { usuarioService } from '../Usuario/UsuarioService.js';
 import { analiseGastosService } from '../AnaliseGastos/AnaliseGastosService.js';
+import { despesaRecorrenteService } from '../DespesaRecorrente/DespesaRecorrenteService.js';
 import { idSchema } from '../Schema.js';
 import { periodoSchema, validaCategoria } from './DespesaSchema.js';
 
 export class DespesaController {
     private async usuarioExiste(id: string) {
         await usuarioService.recuperaUsuario(id);
+
+        await despesaRecorrenteService
+            .gerarDespesasPendentes(id)
+            .catch((err) =>
+                console.error(
+                    'Falha silenciosa ao gerar despesas recorrentes:',
+                    err,
+                ),
+            );
     }
 
     async cadastrarDespesa(req: Request, res: Response) {
