@@ -30,6 +30,7 @@ const criaDespesaMock = (
     data: new Date('2026-05-18'),
     valor: new Prisma.Decimal(valor),
     idUsuario: '321-uuid',
+    idDespesaRecorrente: null,
 });
 
 describe('DespesaService - Testes de Unidade', () => {

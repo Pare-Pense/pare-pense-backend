@@ -1,5 +1,6 @@
 import { criarTokenUser } from '../../lib/auth.js';
 import { prisma } from '../../lib/prisma.js';
+import { despesaRecorrenteService } from '../DespesaRecorrente/DespesaRecorrenteService.js';
 import type {
     AtualizaSenhaSchema,
     LoginUsuarioSchema,
@@ -135,6 +136,15 @@ export class UsuarioService {
         if (!usuario || !(await bcrypt.compare(data.senha, usuario.senha))) {
             throw new Error('Email ou senha inválido');
         }
+
+        await despesaRecorrenteService
+            .gerarDespesasPendentes(usuario.id)
+            .catch((err) =>
+                console.error(
+                    'Falha silenciosa ao gerar despesas recorrentes:',
+                    err,
+                ),
+            );
 
         const dto = this.usuarioParaDto(usuario);
 
