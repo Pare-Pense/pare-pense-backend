@@ -4,6 +4,7 @@ import { usuarioService } from '../Usuario/UsuarioService.js';
 import { analiseGastosService } from '../AnaliseGastos/AnaliseGastosService.js';
 import { idSchema } from '../Schema.js';
 import { periodoSchema, validaCategoria } from './DespesaSchema.js';
+import { analiseExtratoService } from '../AnaliseExtrato/AnaliseExtratoService.js';
 
 export class DespesaController {
     private async usuarioExiste(id: string) {
@@ -205,6 +206,35 @@ export class DespesaController {
                     return;
                 }
 
+                res.status(400).json({ erro: error.message });
+                return;
+            }
+
+            res.status(500).json({
+                erro: 'Ocorreu um erro desconhecido no servidor',
+            });
+        }
+    }
+
+    async importarExtrato(req: Request, res: Response) {
+        try {
+            const file = req.file;
+            if (file === undefined) {
+                return res.status(400).json({
+                    erro: 'Um arquivo deve ser enviado',
+                });
+            }
+            if (!file.originalname.endsWith('.ofx')) {
+                return res.status(400).json({
+                    erro: 'Arquivo deve ser .ofx',
+                });
+            }
+            const raw = file.buffer.toString();
+            const despesas = analiseExtratoService.processarOFX(raw);
+
+            res.status(200).json(despesas);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
                 res.status(400).json({ erro: error.message });
                 return;
             }
