@@ -13,16 +13,18 @@ class AnaliseExtratoService {
 
         const arr: DespesaExtraida[] = [];
 
-        for (const transfer of dados.getBankTransferList() ?? []) {
-            const valor = Number(transfer.TRNAMT);
+        const transfers = dados.toNormalized({
+            dateMode: 'date',
+        }).transactions;
+
+        for (const transfer of transfers) {
             // ignorar receitas por enquanto
-            if (valor >= 0) continue;
+            if (transfer.direction !== 'debit') continue;
             arr.push({
-                valor: -valor,
-                // data vem no formato yyyy-mm-dd
-                data: new Date(transfer.DTPOSTED),
-                id: transfer.FITID,
-                extra: `${transfer.MEMO ?? ''} ${transfer.NAME ?? ''}`.trim(),
+                valor: transfer.amountAbs as number,
+                data: transfer.postedAt as Date,
+                id: transfer.fitId,
+                extra: transfer.description.trim(),
             });
         }
 
