@@ -184,7 +184,7 @@ describe('CategoriaService - Testes de Unidade', () => {
     });
 
     describe('Função: Deletar categoria', () => {
-        it('move as despesas para OUTROS e deleta a categoria', async () => {
+        it('move as despesas e recorrências para OUTROS e deleta a categoria', async () => {
             mockPrisma.categoria.findUnique.mockResolvedValue(
                 categoriaPersonalizada,
             );
@@ -197,6 +197,10 @@ describe('CategoriaService - Testes de Unidade', () => {
 
             expect(mensagem.message).toBe('Categoria deletada com sucesso');
             expect(mockPrisma.despesa.updateMany).toHaveBeenCalledWith({
+                where: { idCategoria: categoriaPersonalizada.id },
+                data: { idCategoria: categoriaOutros.id },
+            });
+            expect(mockPrisma.despesaRecorrente.updateMany).toHaveBeenCalledWith({
                 where: { idCategoria: categoriaPersonalizada.id },
                 data: { idCategoria: categoriaOutros.id },
             });

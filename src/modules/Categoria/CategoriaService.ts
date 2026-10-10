@@ -41,7 +41,7 @@ export class CategoriaService {
             orderBy: { nome: 'asc' },
         });
 
-        return categorias.map((categoria) => this.formataCategoria(categoria));
+        return categorias.map((categoria: any) => this.formataCategoria(categoria));
     }
 
     async recuperarCategoriaAcessivel(idUsuario: string, idCategoria: string) {
@@ -115,6 +115,10 @@ export class CategoriaService {
 
         await this.db.$transaction([
             this.db.despesa.updateMany({
+                where: { idCategoria },
+                data: { idCategoria: categoriaFallback.id },
+            }),
+            this.db.despesaRecorrente.updateMany({
                 where: { idCategoria },
                 data: { idCategoria: categoriaFallback.id },
             }),
