@@ -137,6 +137,16 @@ describe('DespesaService - Testes de Unidade', () => {
             expect(mockPrisma.despesa.findMany).toHaveBeenCalledOnce();
         });
 
+        it('ordena despesas da mais recente para a mais antiga', async () => {
+            mockPrisma.despesa.findMany.mockResolvedValue([]);
+
+            await despesaService.recuperarDespesasAll('321-uuid');
+
+            expect(mockPrisma.despesa.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({ orderBy: { data: 'desc' } }),
+            );
+        });
+
         it('recupera despesa do usuário com sucesso', async () => {
             mockPrisma.despesa.findUnique.mockResolvedValue(criaDespesaMock());
 
