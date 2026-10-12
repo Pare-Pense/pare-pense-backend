@@ -11,6 +11,8 @@ import type {
 
 const LIMITE_ITERACOES_BUSCA = 1000;
 
+const MEIO_DIA_EM_MS = 12 * 60 * 60 * 1000;
+
 type ConfigRecorrencia = Pick<
     DespesaRecorrente,
     'frequencia' | 'diaSemana' | 'diaMes' | 'mes' | 'dataInicio'
@@ -249,7 +251,7 @@ export class DespesaRecorrenteService {
                 valor: recorrente.valor,
                 idUsuario: recorrente.idUsuario,
                 idDespesaRecorrente: recorrente.id,
-                data,
+                data: new Date(data.getTime() + MEIO_DIA_EM_MS),
             })),
             skipDuplicates: true,
         });
