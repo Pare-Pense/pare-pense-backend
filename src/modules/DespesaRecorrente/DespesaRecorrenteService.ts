@@ -1,4 +1,7 @@
-import type { DespesaRecorrente } from '../../generated/prisma/client.js';
+import type {
+    DespesaRecorrente,
+    Prisma,
+} from '../../generated/prisma/client.js';
 import { prisma } from '../../lib/prisma.js';
 import { CategoriaService } from '../Categoria/CategoriaService.js';
 import type {
@@ -163,25 +166,7 @@ export class DespesaRecorrenteService {
 
         const recorrente = await this.db.despesaRecorrente.update({
             where: { id },
-            data: {
-                ...(data.nome !== undefined && { nome: data.nome }),
-                ...(data.idCategoria !== undefined && {
-                    idCategoria: data.idCategoria,
-                }),
-                ...(data.valor !== undefined && { valor: data.valor }),
-                ...(data.frequencia !== undefined && {
-                    frequencia: data.frequencia,
-                }),
-                ...(data.diaSemana !== undefined && {
-                    diaSemana: data.diaSemana,
-                }),
-                ...(data.diaMes !== undefined && { diaMes: data.diaMes }),
-                ...(data.mes !== undefined && { mes: data.mes }),
-                ...(data.dataInicio !== undefined && {
-                    dataInicio: data.dataInicio,
-                }),
-                ...(data.dataFim !== undefined && { dataFim: data.dataFim }),
-            },
+            data: data as Prisma.DespesaRecorrenteUncheckedUpdateInput,
         });
 
         return this.formataDespesaRecorrente(recorrente);
