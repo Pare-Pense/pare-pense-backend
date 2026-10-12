@@ -2,8 +2,10 @@ import type { Request, Response } from 'express';
 import { despesaService } from './DespesaService.js';
 import { usuarioService } from '../Usuario/UsuarioService.js';
 import { analiseGastosService } from '../AnaliseGastos/AnaliseGastosService.js';
+import { despesaRecorrenteService } from '../DespesaRecorrente/DespesaRecorrenteService.js';
 import { idSchema } from '../Schema.js';
 import { periodoSchema, validaCategoria } from './DespesaSchema.js';
+import { analiseExtratoService } from '../AnaliseExtrato/AnaliseExtratoService.js';
 
 export class DespesaController {
     private async usuarioExiste(id: string) {
@@ -20,10 +22,20 @@ export class DespesaController {
 
             const usuario = await usuarioService.recuperaUsuario(idUsuario);
 
+            await despesaRecorrenteService
+            .gerarDespesasPendentes(idUsuario)
+            .catch((err) =>
+                console.error(
+                    'Falha silenciosa ao gerar despesas recorrentes:',
+                    err,
+                ),
+            );
+
             analiseGastosService
                 .processarAnalisePosGasto(idUsuario, usuario.limiteMensal, {
                     id: despesa.id,
                     valor: despesa.valor,
+                    idCategoria: despesa.idCategoria,
                     categoria: despesa.categoria,
                 })
                 .catch((err) =>
@@ -51,20 +63,29 @@ export class DespesaController {
     async recuperarDespesasAll(req: Request, res: Response) {
         try {
             const { idUsuario } = req.params;
-            const { periodo, categoria } = req.query;
+            const { periodo, idCategoria } = req.query;
 
             const idUsuarioVerificado = idSchema.parse(idUsuario);
 
             await this.usuarioExiste(idUsuarioVerificado);
+            
+            await despesaRecorrenteService
+            .gerarDespesasPendentes(idUsuarioVerificado)
+            .catch((err) =>
+                console.error(
+                    'Falha silenciosa ao gerar despesas recorrentes:',
+                    err,
+                ),
+            );
 
             const periodoValidado = periodoSchema.optional().parse(periodo);
 
-            const categoriaEnum = validaCategoria.parse(categoria);
+            const idCategoriaVerificado = validaCategoria.parse(idCategoria);
 
             const despesas = await despesaService.recuperarDespesasAll(
                 idUsuarioVerificado,
                 periodoValidado,
-                categoriaEnum,
+                idCategoriaVerificado,
             );
 
             return res.status(200).json(despesas);
@@ -205,6 +226,35 @@ export class DespesaController {
                     return;
                 }
 
+                res.status(400).json({ erro: error.message });
+                return;
+            }
+
+            res.status(500).json({
+                erro: 'Ocorreu um erro desconhecido no servidor',
+            });
+        }
+    }
+
+    async importarExtrato(req: Request, res: Response) {
+        try {
+            const file = req.file;
+            if (file === undefined) {
+                return res.status(400).json({
+                    erro: 'Um arquivo deve ser enviado',
+                });
+            }
+            if (!file.originalname.endsWith('.ofx')) {
+                return res.status(400).json({
+                    erro: 'Arquivo deve ser .ofx',
+                });
+            }
+            const raw = file.buffer.toString();
+            const despesas = analiseExtratoService.processarOFX(raw);
+
+            res.status(200).json(despesas);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
                 res.status(400).json({ erro: error.message });
                 return;
             }
