@@ -9,15 +9,6 @@ import { periodoSchema, validaCategoria } from './DespesaSchema.js';
 export class DespesaController {
     private async usuarioExiste(id: string) {
         await usuarioService.recuperaUsuario(id);
-
-        await despesaRecorrenteService
-            .gerarDespesasPendentes(id)
-            .catch((err) =>
-                console.error(
-                    'Falha silenciosa ao gerar despesas recorrentes:',
-                    err,
-                ),
-            );
     }
 
     async cadastrarDespesa(req: Request, res: Response) {
@@ -29,6 +20,15 @@ export class DespesaController {
             const despesa = await despesaService.cadastrarDespesa(req.body);
 
             const usuario = await usuarioService.recuperaUsuario(idUsuario);
+
+            await despesaRecorrenteService
+            .gerarDespesasPendentes(idUsuario)
+            .catch((err) =>
+                console.error(
+                    'Falha silenciosa ao gerar despesas recorrentes:',
+                    err,
+                ),
+            );
 
             analiseGastosService
                 .processarAnalisePosGasto(idUsuario, usuario.limiteMensal, {
@@ -67,6 +67,15 @@ export class DespesaController {
             const idUsuarioVerificado = idSchema.parse(idUsuario);
 
             await this.usuarioExiste(idUsuarioVerificado);
+            
+            await despesaRecorrenteService
+            .gerarDespesasPendentes(idUsuarioVerificado)
+            .catch((err) =>
+                console.error(
+                    'Falha silenciosa ao gerar despesas recorrentes:',
+                    err,
+                ),
+            );
 
             const periodoValidado = periodoSchema.optional().parse(periodo);
 
