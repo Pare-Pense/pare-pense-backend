@@ -53,7 +53,7 @@ export class ReceitaService {
                 }),
             },
             orderBy: {
-                data: 'asc',
+                data: 'desc',
             },
         });
 

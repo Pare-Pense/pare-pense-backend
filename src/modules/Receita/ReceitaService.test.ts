@@ -54,6 +54,16 @@ describe('ReceitaService - Testes de Unidade', () => {
             expect(mockPrisma.receita.findMany).toHaveBeenCalledOnce();
         });
 
+        it('ordena receitas da mais recente para a mais antiga', async () => {
+            mockPrisma.receita.findMany.mockResolvedValue([]);
+
+            await receitaService.recuperarReceitasAll('321-uuid');
+
+            expect(mockPrisma.receita.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({ orderBy: { data: 'desc' } }),
+            );
+        });
+
         it('recupera receita do usuário com sucesso', async () => {
             mockPrisma.receita.findUnique.mockResolvedValue({
                 id: '123-uuid',
