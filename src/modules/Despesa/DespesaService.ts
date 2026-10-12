@@ -72,7 +72,7 @@ export class DespesaService {
             },
             include: { categoria: true },
             orderBy: {
-                data: 'asc',
+                data: 'desc',
             },
         });
 

@@ -79,7 +79,12 @@ export class AnaliseGastosService {
             const gastosPorDia = new Map<number, number>();
             let gastoAcumulado = 0;
 
-            for (const desp of todasDespesasMensais) {
+            const despesasCronologicas = [...todasDespesasMensais].sort(
+                (a, b) =>
+                    new Date(a.data).getTime() - new Date(b.data).getTime(),
+            );
+
+            for (const desp of despesasCronologicas) {
                 const dataDesp = new Date(desp.data);
                 const dia = dataDesp.getDate();
                 gastoAcumulado += desp.valor;
