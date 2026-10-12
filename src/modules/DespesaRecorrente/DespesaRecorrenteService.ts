@@ -120,7 +120,7 @@ export class DespesaRecorrenteService {
     async listarDespesasRecorrentes(idUsuario: string) {
         const recorrentes = await this.db.despesaRecorrente.findMany({
             where: { idUsuario },
-            orderBy: { createdAt: 'asc' },
+            orderBy: { createdAt: 'desc' },
         });
 
         return recorrentes.map((r) => this.formataDespesaRecorrente(r));
